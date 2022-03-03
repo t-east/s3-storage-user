@@ -5,7 +5,8 @@ import (
 	"log"
 	"os"
 
-	router "pairing_test/src/user/drivers/router"
+	router "user/src/user/drivers/router"
+
 	"github.com/joho/godotenv"
 )
 

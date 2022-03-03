@@ -1,7 +1,7 @@
 package port
 
 import (
-	entities "pairing_test/src/user/domains/entities"
+	entities "user/src/user/domains/entities"
 )
 
 type UserInputPort interface {
@@ -17,7 +17,7 @@ type UserOutputPort interface {
 
 type UserRepository interface {
 	Create(*entities.User) (*entities.User, error)
-	Update( *entities.User) (*entities.User, error)
+	Update(*entities.User) (*entities.User, error)
 	FindByID(string) (*entities.User, error)
 }
 

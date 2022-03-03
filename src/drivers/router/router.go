@@ -9,9 +9,9 @@ import (
 	// "os"
 
 	// blank import for MySQL driver
-	eth "pairing_test/src/user/drivers/ethereum"
-	rdb "pairing_test/src/user/drivers/rdb"
-	"pairing_test/src/user/interfaces/controllers"
+	eth "user/src/user/drivers/ethereum"
+	rdb "user/src/user/drivers/rdb"
+	"user/src/user/interfaces/controllers"
 
 	_ "github.com/go-sql-driver/mysql"
 )

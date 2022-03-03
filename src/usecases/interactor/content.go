@@ -1,8 +1,8 @@
 package interactor
 
 import (
-	entities "pairing_test/src/user/domains/entities"
-	port "pairing_test/src/user/usecases/port"
+	entities "user/src/user/domains/entities"
+	port "user/src/user/usecases/port"
 )
 
 type ContentHandler struct {
@@ -34,7 +34,6 @@ func (c *ContentHandler) Upload(contentInput *entities.ContentInput) {
 		c.OutputPort.RenderError(err)
 		return
 	}
-
 
 	// TODO　ブロックチェーンに登録する
 

@@ -1,7 +1,7 @@
 package ethereum
 
 import (
-	"pairing_test/src/user/interfaces/contracts"
+	"user/src/user/interfaces/contracts"
 )
 
 func GetParam() (contracts.Param, error) {

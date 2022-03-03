@@ -3,9 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
-	"pairing_test/src/user/domains/entities"
-	"pairing_test/src/user/interfaces/contracts"
-	"pairing_test/src/user/usecases/port"
+	"user/src/user/domains/entities"
+	"user/src/user/interfaces/contracts"
+	"user/src/user/usecases/port"
 
 	"gorm.io/gorm"
 )

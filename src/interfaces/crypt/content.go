@@ -1,9 +1,9 @@
 package crypt
 
 import (
-	"pairing_test/src/user/domains/entities"
-	contracts "pairing_test/src/user/interfaces/contracts"
-	"pairing_test/src/user/usecases/port"
+	"user/src/user/domains/entities"
+	contracts "user/src/user/interfaces/contracts"
+	"user/src/user/usecases/port"
 )
 
 // type UserCrypt interface {
