@@ -22,10 +22,17 @@ type ContentInput struct {
 	Owner       string `json:"owner"`
 }
 
+type ContentInDB struct {
+	Id          string `json:"id"`
+	UserId      string `json:"user_id"`
+	ContentName string `json:"name"`
+	Owner       string `json:"owner"`
+}
+
 type ReceiptFromSP struct {
 	ContentName string `json:"name"`
 	Owner       string `json:"owner"`
-	Id       string `json:"id"`
+	Id          string `json:"id"`
 }
 
 type ReceiptFromBC struct {

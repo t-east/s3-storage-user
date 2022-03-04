@@ -15,7 +15,7 @@ type ContentOutputPort interface {
 }
 
 type ContentRepository interface {
-	Create(user *entities.Content) (*entities.Content, error)
+	Create(user *entities.Content) (*entities.ContentInDB, error)
 	Find(id string) (*entities.Content, error)
 }
 

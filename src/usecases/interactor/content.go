@@ -31,11 +31,12 @@ func (c *ContentHandler) Upload(contentInput *entities.ContentInput) (*entities.
 		return nil, err
 	}
 	// contentIDをデータベースに保存
-	content, err = c.Repository.Create(content)
+	contentInDB, err := c.Repository.Create(content)
 	if err != nil {
 		c.OutputPort.RenderError(err)
 		return nil, err
 	}
+	content.Id = contentInDB.Id
 
 	err = c.ContentContract.Register(content.ContentName, content.Id)
 	if err != nil {

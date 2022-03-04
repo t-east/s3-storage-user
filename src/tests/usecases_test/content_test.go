@@ -7,7 +7,7 @@ import (
 	"user/src/usecases/interactor"
 )
 
-func TestContentCreate(t *testing.T) {
+func TestContentUpload(t *testing.T) {
 	outputPort := mocks.NewContentOutputPortMock()
 	repository := mocks.NewContentRepositoryMock()
 	crypt := mocks.NewContentCryptMock()
@@ -26,12 +26,12 @@ func TestContentCreate(t *testing.T) {
 		t.Fatal(err)
 	}
 	if receipt.Id != "7" {
-		t.Errorf("User.Create() should return entities.User.ID = 7, but got = %s", receipt.Id)
+		t.Errorf("Content.Upload() should return entities.Content.Id = 7, but got = %s", receipt.Id)
 	}
 	if receipt.Owner != contentInput.Owner {
-		t.Errorf("User.Create() should return entities.User.Address = %s, but got = %s", contentInput.Owner, receipt.Owner)
+		t.Errorf("Content.Upload() should return entities.Content.Owner = %s, but got = %s", contentInput.Owner, receipt.Owner)
 	}
 	if receipt.ContentName != contentInput.ContentName {
-		t.Errorf("User.Create() should return entities.User.Address = %s, but got = %s", contentInput.ContentName, receipt.ContentName)
+		t.Errorf("Content.Upload() should return entities.Content.ContentName = %s, but got = %s", contentInput.ContentName, receipt.ContentName)
 	}
 }

@@ -51,9 +51,13 @@ type ContentSPMock struct {
 type ContentContractMock struct {
 }
 
-
-func (m *ContentRepositoryMock) Create(Content *entities.Content) (*entities.Content, error) {
-	created := &entities.Content{Id: "7", UserId: "1"}
+func (m *ContentRepositoryMock) Create(content *entities.Content) (*entities.ContentInDB, error) {
+	created := &entities.ContentInDB{
+		Id:          "7",
+		UserId:      content.UserId,
+		ContentName: content.ContentName,
+		Owner:       content.Owner,
+	}
 	return created, nil
 }
 
