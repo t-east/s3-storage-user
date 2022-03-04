@@ -24,13 +24,13 @@ func NewContentInputPort(outputPort port.ContentOutputPort, repository port.Cont
 }
 
 func (c *ContentHandler) Upload(contentInput *entities.ContentInput) (*entities.ReceiptFromSP, error) {
-	// メタデータ作成
+	//* メタデータ作成
 	content, err := c.Crypt.MakeMetaData(contentInput)
 	if err != nil {
 		c.OutputPort.RenderError(err)
 		return nil, err
 	}
-	// contentIDをデータベースに保存
+	//* contentIDをデータベースに保存
 	contentInDB, err := c.Repository.Create(content)
 	if err != nil {
 		c.OutputPort.RenderError(err)
@@ -38,13 +38,14 @@ func (c *ContentHandler) Upload(contentInput *entities.ContentInput) (*entities.
 	}
 	content.Id = contentInDB.Id
 
+	//* ブロックチェーンに登録
 	err = c.ContentContract.Register(content.ContentName, content.Id)
 	if err != nil {
 		c.OutputPort.RenderError(err)
 		return nil, err
 	}
 
-	// SPにアップロードする
+	//* SPにアップロードする
 	receipt, err := c.ContentSP.UploadSP(content)
 	if err != nil {
 		c.OutputPort.RenderError(err)
@@ -55,14 +56,14 @@ func (c *ContentHandler) Upload(contentInput *entities.ContentInput) (*entities.
 }
 
 func (c *ContentHandler) FindByID(id string) {
-	// content情報を取得
+	//* content情報を取得
 	content, err := c.Repository.Find(id)
 	if err != nil {
 		c.OutputPort.RenderError(err)
 		return
 	}
 
-	// SPからコンテント情報を取得
+	//* SPからコンテント情報を取得
 	receipt, err := c.ContentSP.GetContent(content.Id)
 	if err != nil {
 		c.OutputPort.RenderError(err)
