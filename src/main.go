@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	router "user/src/user/drivers/router"
+	router "user/src/drivers/router"
 
 	"github.com/joho/godotenv"
 )

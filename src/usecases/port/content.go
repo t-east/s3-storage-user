@@ -1,7 +1,7 @@
 package port
 
 import (
-	entities "user/src/user/domains/entities"
+	entities "user/src/domains/entities"
 )
 
 type ContentInputPort interface {

@@ -1,8 +1,8 @@
 package gateways
 
 import (
-	"user/src/user/domains/entities"
-	"user/src/user/usecases/port"
+	"user/src/domains/entities"
+	"user/src/usecases/port"
 
 	"gorm.io/gorm"
 )

@@ -1,8 +1,8 @@
 package interactor
 
 import (
-	entities "user/src/user/domains/entities"
-	port "user/src/user/usecases/port"
+	entities "user/src/domains/entities"
+	port "user/src/usecases/port"
 )
 
 type ContentHandler struct {
