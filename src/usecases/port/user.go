@@ -6,8 +6,8 @@ import (
 
 type UserInputPort interface {
 	Create(*entities.User) (*entities.User, error)
-	KeyGen(string)
-	FindByID(string)
+	// KeyGen(string) (*entities.User, error)
+	FindByID(string) (*entities.User, error)
 }
 
 type UserOutputPort interface {

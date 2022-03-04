@@ -39,28 +39,32 @@ func (uc *UserHandler) Create(user *entities.User) (*entities.User, error) {
 	return user, nil
 }
 
-func (uc *UserHandler) FindByID(id string) {
+func (uc *UserHandler) FindByID(id string) (*entities.User, error) {
 	user, err := uc.Repository.FindByID(id)
 	if err != nil {
 		uc.OutputPort.RenderError(err)
+		return nil, err
 	}
 	uc.OutputPort.Render(user, 200)
+	return user, nil
 }
 
-func (uc *UserHandler) KeyGen(id string) {
-	user, err := uc.Repository.FindByID(id)
-	if err != nil {
-		uc.OutputPort.RenderError(err)
-	}
-	_, err = uc.Crypt.KeyGen()
-	if err != nil {
-		uc.OutputPort.RenderError(err)
-	}
-	// TODO; entitiesにkeyを加える処理を付ける
-	updatedUser := user
-	updatedUser, err = uc.Repository.Update(updatedUser)
-	if err != nil {
-		uc.OutputPort.RenderError(err)
-	}
-	uc.OutputPort.Render(updatedUser, 200)
-}
+// func (uc *UserHandler) KeyGen(id string) (*entities.User, error) {
+// 	user, err := uc.Repository.FindByID(id)
+// 	if err != nil {
+// 		uc.OutputPort.RenderError(err)
+// 	}
+// 	_, err = uc.Crypt.KeyGen()
+// 	if err != nil {
+// 		uc.OutputPort.RenderError(err)
+// 	}
+// 	// TODO; entitiesにkeyを加える処理を付ける
+// 	updatedUser := user
+// 	updatedUser, err = uc.Repository.Update(updatedUser)
+// 	if err != nil {
+// 		uc.OutputPort.RenderError(err)
+// 		return nil, err
+// 	}
+// 	uc.OutputPort.Render(updatedUser, 200)
+// 	return updatedUser, nil
+// }
