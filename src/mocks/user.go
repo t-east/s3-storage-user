@@ -43,7 +43,7 @@ func (m *userRepositoryMock) Create(user *entities.User) (*entities.User, error)
 }
 
 func (m *userRepositoryMock) FindByID(id string) (*entities.User, error) {
-	user := &entities.User{ID: id, Address: "user.Address", PubKey: "user.PubKey", PrivKey: "user.PrivKey"}
+	user := &entities.User{ID: id, Address: "sdf", PubKey: "sdf", PrivKey: "sdf"}
 	return user, nil
 }
 
@@ -58,9 +58,7 @@ func (m *userCryptMock) KeyGen() (*entities.Key, error) {
 }
 
 func (m *userOutputPortMock) Render(*entities.User, int) {
-	return
 }
 
 func (m *userOutputPortMock) RenderError(error) {
-	return
 }
