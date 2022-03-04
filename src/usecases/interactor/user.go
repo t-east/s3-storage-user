@@ -20,12 +20,12 @@ func NewUserInputPort(outputPort port.UserOutputPort, repository port.UserReposi
 	}
 }
 
-func (uc *UserHandler) Create(user *entities.User) {
+func (uc *UserHandler) Create(user *entities.User) (*entities.User, error) {
 	// TODO: ユーザ情報を確認する -> 登録済みなのに新しく鍵を生成したら色々狂う
 	key, err := uc.Crypt.KeyGen()
 	if err != nil {
 		uc.OutputPort.RenderError(err)
-		return
+		return nil, err
 	}
 	// TODO: バリデーションを付ける
 	user.PubKey = key.PubKey
@@ -33,9 +33,10 @@ func (uc *UserHandler) Create(user *entities.User) {
 	user, err = uc.Repository.Create(user)
 	if err != nil {
 		uc.OutputPort.RenderError(err)
-		return
+		return nil, err
 	}
 	uc.OutputPort.Render(user, 201)
+	return user, nil
 }
 
 func (uc *UserHandler) FindByID(id string) {
