@@ -5,14 +5,13 @@ import (
 )
 
 type ContentInputPort interface {
-	Upload(content *entities.ContentInput)
+	Upload(content *entities.ContentInput) (*entities.ReceiptFromSP, error)
 	FindByID(id string)
 }
 
 type ContentOutputPort interface {
 	Render(*entities.ReceiptFromSP, int)
 	RenderError(error)
-	UploadSP(*entities.Content) (*entities.ReceiptFromSP, error)
 }
 
 type ContentRepository interface {

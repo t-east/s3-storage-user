@@ -25,7 +25,7 @@ type ContentInput struct {
 type ReceiptFromSP struct {
 	ContentName string `json:"name"`
 	Owner       string `json:"owner"`
-	ArtId       string `json:"art_id"`
+	Id       string `json:"id"`
 }
 
 type ReceiptFromBC struct {

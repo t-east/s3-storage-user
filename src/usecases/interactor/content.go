@@ -6,44 +6,51 @@ import (
 )
 
 type ContentHandler struct {
-	OutputPort port.ContentOutputPort
-	Repository port.ContentRepository
-	Crypt      port.ContentCrypt
-	ContentSP  port.ContentSP
+	OutputPort      port.ContentOutputPort
+	Repository      port.ContentRepository
+	Crypt           port.ContentCrypt
+	ContentSP       port.ContentSP
+	ContentContract port.ContentContract
 }
 
-func NewContentInputPort(outputPort port.ContentOutputPort, repository port.ContentRepository, cryptHandler port.ContentCrypt, spHandler port.ContentSP) port.ContentInputPort {
+func NewContentInputPort(outputPort port.ContentOutputPort, repository port.ContentRepository, cryptHandler port.ContentCrypt, spHandler port.ContentSP, contract port.ContentContract) port.ContentInputPort {
 	return &ContentHandler{
-		OutputPort: outputPort,
-		Repository: repository,
-		Crypt:      cryptHandler,
-		ContentSP:  spHandler,
+		OutputPort:      outputPort,
+		Repository:      repository,
+		Crypt:           cryptHandler,
+		ContentSP:       spHandler,
+		ContentContract: contract,
 	}
 }
 
-func (c *ContentHandler) Upload(contentInput *entities.ContentInput) {
+func (c *ContentHandler) Upload(contentInput *entities.ContentInput) (*entities.ReceiptFromSP, error) {
 	// メタデータ作成
 	content, err := c.Crypt.MakeMetaData(contentInput)
 	if err != nil {
 		c.OutputPort.RenderError(err)
-		return
+		return nil, err
 	}
 	// contentIDをデータベースに保存
 	content, err = c.Repository.Create(content)
 	if err != nil {
 		c.OutputPort.RenderError(err)
-		return
+		return nil, err
 	}
 
-	// TODO　ブロックチェーンに登録する
-
-	// SPにアップロードする
-	receipt, err := c.OutputPort.UploadSP(content)
+	err = c.ContentContract.Register(content.ContentName, content.Id)
 	if err != nil {
 		c.OutputPort.RenderError(err)
-		return
+		return nil, err
+	}
+
+	// SPにアップロードする
+	receipt, err := c.ContentSP.UploadSP(content)
+	if err != nil {
+		c.OutputPort.RenderError(err)
+		return nil, err
 	}
 	c.OutputPort.Render(receipt, 201)
+	return receipt, nil
 }
 
 func (c *ContentHandler) FindByID(id string) {
