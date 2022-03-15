@@ -6,9 +6,6 @@ type Content struct {
 	HashedData  [][]byte `json:"hashed_data"`
 	ContentName string   `json:"name"`
 	SplitCount  int      `json:"split_count"`
-	Owner       string   `json:"owner"`
-	Id          string   `json:"id"`
-	UserId      string   `json:"user_id"`
 }
 
 type ContentInput struct {

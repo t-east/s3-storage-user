@@ -44,9 +44,6 @@ func (m *ContentCryptMock) MakeMetaData(input *entities.ContentInput) (*entities
 		HashedData:  [][]byte{},
 		ContentName: input.ContentName,
 		SplitCount:  0,
-		Owner:       input.Owner,
-		Id:          "",
-		UserId:      "",
 	}
 	return content, nil
 }

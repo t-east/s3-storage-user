@@ -27,12 +27,6 @@ func TestContentUpload(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if receipt.Id != "7" {
-		t.Errorf("Content.Upload() should return entities.Content.Id = 7, but got = %s", receipt.Id)
-	}
-	if receipt.Owner != contentInput.Owner {
-		t.Errorf("Content.Upload() should return entities.Content.Owner = %s, but got = %s", contentInput.Owner, receipt.Owner)
-	}
 	if receipt.ContentName != contentInput.ContentName {
 		t.Errorf("Content.Upload() should return entities.Content.ContentName = %s, but got = %s", contentInput.ContentName, receipt.ContentName)
 	}

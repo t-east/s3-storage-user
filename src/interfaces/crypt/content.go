@@ -58,10 +58,7 @@ func (cc *contentCrypt) MakeMetaData(uc *entities.ContentInput) (*entities.Conte
 		Content:     []byte{},
 		MetaData:    metaData,
 		HashedData:  hashData,
-		ContentName: "",
+		ContentName: uc.ContentName,
 		SplitCount:  splitCount,
-		Owner:       "",
-		Id:          "",
-		UserId:      "",
 	}, nil
 }
