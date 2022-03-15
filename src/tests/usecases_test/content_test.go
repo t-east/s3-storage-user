@@ -18,8 +18,8 @@ func TestContentUpload(t *testing.T) {
 		Owner:       "オーナー1",
 		Param: &entities.Param{
 			Pairing: "a",
-			G:       "d",
-			U:       "f",
+			G:       []byte("d"),
+			U:       []byte("f"),
 		},
 	}
 

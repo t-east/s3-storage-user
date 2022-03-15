@@ -24,5 +24,6 @@ func (c *ContentHandler) Upload(contentInput *entities.ContentInput) (*entities.
 		c.OutputPort.RenderError(err)
 		return nil, err
 	}
+	c.OutputPort.Render(content, 200)
 	return content, nil
 }
