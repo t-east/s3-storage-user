@@ -9,8 +9,7 @@ import (
 	// "os"
 
 	// blank import for MySQL driver
-	eth "user/src/drivers/ethereum"
-	rdb "user/src/drivers/rdb"
+
 	"user/src/interfaces/controllers"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -18,23 +17,10 @@ import (
 
 // Serve はserverを起動させます．
 func Serve(addr string) {
-	// データベース情報を取得
-	db, err := rdb.NewSQLHandler()
-	if err != nil {
-		log.Fatalf("Can't get DB. %+v", err)
-	}
-
-	// パラメータを取得
-	param, err := eth.GetParam()
-	if err != nil {
-		log.Fatalf("Can't get Param from BC. %+v", err)
-	}
-
 	// コントローラの準備
-	_ = controllers.LoadUserController(db, param)
-	_ = controllers.LoadContentController(db, param)
+	_ = controllers.LoadContentController()
 
-	err = http.ListenAndServe(addr, nil)
+	err := http.ListenAndServe(addr, nil)
 	if err != nil {
 		log.Fatalf("Listen and serve failed. %+v", err)
 	}

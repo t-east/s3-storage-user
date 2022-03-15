@@ -1,10 +1,5 @@
 package entities
 
-type ArtLog struct {
-	HashedData [][]byte `json:"hashed_data"`
-	Owner      string   `json:"owner"`
-}
-
 type Content struct {
 	Content     []byte   `json:"content"`
 	MetaData    [][]byte `json:"meta_data"`
@@ -20,28 +15,17 @@ type ContentInput struct {
 	Content     []byte `json:"content"`
 	ContentName string `json:"name"`
 	Owner       string `json:"owner"`
+	Param       *Param `json:"param"`
+	Key         *Key    `json:"key"`
 }
 
-type ContentInDB struct {
-	Id          string `json:"id"`
-	UserId      string `json:"user_id"`
-	ContentName string `json:"name"`
-	Owner       string `json:"owner"`
+type Key struct {
+	PubKey  string `json:"pub_key"`
+	PrivKey string `json:"priv_key"`
 }
 
-type ReceiptFromSP struct {
-	ContentName string `json:"name"`
-	Owner       string `json:"owner"`
-	Id          string `json:"id"`
-}
-
-type ReceiptFromBC struct {
-	ContentName string   `json:"name"`
-	Owner       string   `json:"owner"`
-	ArtId       string   `json:"art_id"`
-	HashedData  [][]byte `json:"hashed_data"`
-}
-
-func NewContent() *Content {
-	return &Content{}
+type Param struct {
+	Pairing string `json:"paring"`
+	G       string `json:"g"`
+	U       string `json:"u"`
 }

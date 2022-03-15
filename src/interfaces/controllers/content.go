@@ -4,34 +4,24 @@ import (
 	"encoding/json"
 	"net/http"
 	"user/src/domains/entities"
-	"user/src/interfaces/contracts"
 	"user/src/usecases/port"
-
-	"gorm.io/gorm"
 )
 
 type ContentController struct {
-	// -> gateway.NewContentRepository
-	RepoFactory func(c *gorm.DB) port.ContentRepository
-	// -> contracts.NewContentContracts
-	ContractFactory func() port.ContentContract
 	// -> crypt.NewContentCrypt
-	CryptFactory func(p contracts.Param) port.ContentCrypt
+	CryptFactory func(p *entities.Param) port.ContentCrypt
 	// -> presenter.NewContentOutputPort
 	OutputFactory func(w http.ResponseWriter) port.ContentOutputPort
 	// -> interactor.NewContentInputPort
 	InputFactory func(
 		o port.ContentOutputPort,
-		u port.ContentRepository,
 		cr port.ContentCrypt,
 		// co port.ContentContracts,
 	) port.ContentInputPort
-	Param contracts.Param
-	Conn  *gorm.DB
 }
 
-func LoadContentController(db *gorm.DB, param contracts.Param) *ContentController {
-	return &ContentController{Conn: db, Param: param}
+func LoadContentController() *ContentController {
+	return &ContentController{}
 }
 
 func (cc *ContentController) Post(w http.ResponseWriter, r *http.Request) {
@@ -42,19 +32,7 @@ func (cc *ContentController) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	outputPort := cc.OutputFactory(w)
-	repository := cc.RepoFactory(cc.Conn)
-	crypt := cc.CryptFactory(cc.Param)
-	inputPort := cc.InputFactory(outputPort, repository, crypt)
+	crypt := cc.CryptFactory(content.Param)
+	inputPort := cc.InputFactory(outputPort, crypt)
 	inputPort.Upload(content)
-}
-
-func (cc *ContentController) Get(w http.ResponseWriter, r *http.Request) {
-	//  TODO: idの取得をちゃんとしたやつにする
-	id := "1"
-
-	outputPort := cc.OutputFactory(w)
-	repository := cc.RepoFactory(cc.Conn)
-	crypt := cc.CryptFactory(cc.Param)
-	inputPort := cc.InputFactory(outputPort, repository, crypt)
-	inputPort.FindByID(id)
 }

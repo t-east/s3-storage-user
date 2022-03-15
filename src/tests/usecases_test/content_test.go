@@ -9,16 +9,18 @@ import (
 
 func TestContentUpload(t *testing.T) {
 	outputPort := mocks.NewContentOutputPortMock()
-	repository := mocks.NewContentRepositoryMock()
 	crypt := mocks.NewContentCryptMock()
-	sp := mocks.NewContentSPMock()
-	contract := mocks.NewContentContractMock()
-	inputPort := interactor.NewContentInputPort(outputPort, repository, crypt, sp, contract)
+	inputPort := interactor.NewContentInputPort(outputPort, crypt)
 
 	contentInput := &entities.ContentInput{
 		Content:     []byte{},
 		ContentName: "コンテンツ1",
 		Owner:       "オーナー1",
+		Param: &entities.Param{
+			Pairing: "a",
+			G:       "d",
+			U:       "f",
+		},
 	}
 
 	receipt, err := inputPort.Upload(contentInput)
