@@ -2,7 +2,6 @@ package presenters
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"user/src/domains/entities"
@@ -20,7 +19,6 @@ func NewContentOutputPort(w http.ResponseWriter) port.ContentOutputPort {
 }
 
 func (c *Content) Render(content *entities.Content, statusCode int) {
-	fmt.Println(content)
 	res, err := json.Marshal(content)
 	if err != nil {
 		http.Error(c.w, err.Error(), http.StatusInternalServerError)
