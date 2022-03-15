@@ -1,26 +1,34 @@
 package router
 
 import (
-	// "database/sql"
-	// "fmt"
+	"fmt"
 	"log"
 	"net/http"
 
-	// "os"
-
-	// blank import for MySQL driver
+	"user/src/core"
 
 	"user/src/interfaces/controllers"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// Serve はserverを起動させます．
-func Serve(addr string) {
-	// コントローラの準備
-	_ = controllers.LoadContentController()
+func ServerHandlerPublic(w http.ResponseWriter, r *http.Request) {
+	var head string
+	head, r.URL.Path = core.ShiftPath(r.URL.Path)
+	switch head {
+	case "content":
+		uc := controllers.LoadContentController()
+		uc.Post(w, r)
+	default:
+		http.Error(w, fmt.Sprintf("method not allowed request. req: %v", r.URL), http.StatusNotFound)
+	}
+}
 
-	err := http.ListenAndServe(addr, nil)
+// Serve はserverを起動させます．
+func Serve() {
+	sm := http.NewServeMux()
+	sm.Handle("/api/", http.HandlerFunc(ServerHandlerPublic))
+	err := http.ListenAndServe(":4000", sm)
 	if err != nil {
 		log.Fatalf("Listen and serve failed. %+v", err)
 	}

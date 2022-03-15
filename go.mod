@@ -14,6 +14,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/mattn/go-colorable v0.1.11 // indirect
 	github.com/nsf/gocode v0.0.0-20190302080247-5bee97b48836 // indirect
+	github.com/oklog/ulid v1.3.1
 	github.com/rogpeppe/godef v1.1.2 // indirect
 	github.com/ugorji/go v1.2.6 // indirect
 	github.com/yoskeoka/go-example/mock v0.0.0-20210309025105-ef9733fe99b0 // indirect

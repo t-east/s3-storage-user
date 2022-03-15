@@ -13,7 +13,7 @@ type ContentInput struct {
 	ContentName string `json:"name"`
 	Owner       string `json:"owner"`
 	Param       *Param `json:"param"`
-	Key         *Key    `json:"key"`
+	Key         *Key   `json:"key"`
 }
 
 type Key struct {
@@ -23,6 +23,6 @@ type Key struct {
 
 type Param struct {
 	Pairing string `json:"paring"`
-	G       string `json:"g"`
-	U       string `json:"u"`
+	G       []byte `json:"g"`
+	U       []byte `json:"u"`
 }

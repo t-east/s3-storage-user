@@ -16,10 +16,8 @@ type contentCrypt struct {
 	Param entities.Param
 }
 
-func NewUserCrypt(param entities.Param) port.ContentCrypt {
-	return &contentCrypt{
-		Param: param,
-	}
+func NewUserCrypt() port.ContentCrypt {
+	return &contentCrypt{}
 }
 
 func (cc *contentCrypt) MakeMetaData(uc *entities.ContentInput) (*entities.Content, error) {
@@ -27,7 +25,7 @@ func (cc *contentCrypt) MakeMetaData(uc *entities.ContentInput) (*entities.Conte
 	if err != nil {
 		return nil, err
 	}
-	u := pairing.NewG1().SetBytes([]byte(uc.Param.U))
+	u := pairing.NewG1().SetBytes(uc.Param.U)
 	splitCount := 3
 	splitedFile, err := core.SplitSlice(uc.Content, splitCount)
 	if err != nil {
@@ -55,7 +53,7 @@ func (cc *contentCrypt) MakeMetaData(uc *entities.ContentInput) (*entities.Conte
 	}
 
 	return &entities.Content{
-		Content:     []byte{},
+		Content:     uc.Content,
 		MetaData:    metaData,
 		HashedData:  hashData,
 		ContentName: uc.ContentName,
