@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"user/src/core"
+	"user/src/mocks"
 
 	"user/src/interfaces/controllers"
 
@@ -31,8 +32,8 @@ func ServerHandlerPublic(w http.ResponseWriter, r *http.Request) {
 	head, r.URL.Path = core.ShiftPath(r.URL.Path)
 	switch head {
 	case "content":
-		uc := controllers.LoadContentController()
-		uc.Post(w, r)
+		uc := controllers.LoadContentController(param)
+		uc.Dispatch(w, r)
 	default:
 		http.Error(w, fmt.Sprintf("method not allowed request. req: %v", r.URL), http.StatusNotFound)
 	}
