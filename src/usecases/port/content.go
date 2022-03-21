@@ -6,10 +6,12 @@ import (
 
 type ContentInputPort interface {
 	Upload(content *entities.ContentIn) (*entities.Content, error)
+	GetKey() (*entities.Key, error)
 }
 
 type ContentOutputPort interface {
 	Render(*entities.Content, int)
+	RenderKey(*entities.Key, int)
 	RenderError(error)
 }
 

@@ -10,36 +10,22 @@ import (
 	"user/src/core"
 	"user/src/domains/entities"
 	"user/src/interfaces/controllers"
-
-	"github.com/Nik-U/pbc"
+	"user/src/mocks"
 )
 
 //* 登録済みユーザのuserIdでコンテンツを作成
 func TestCreateContent(t *testing.T) {
 
-	p := pbc.GenerateA(uint32(160), uint32(512))
-	pairing := p.NewPairing()
-	g := pairing.NewG1().Rand()
-	u := pairing.NewG1().Rand()
-	param := &entities.Param{
-		Pairing: p.String(),
-		G:       g.Bytes(),
-		U:       u.Bytes(),
-	}
+	param, key, _ := mocks.CreateParamSample()
 	//* メタデータ作成
 	f, err := core.UseFileRead("./linux_logo.jpg")
 	if err != nil {
 		t.Fatal(err)
 	}
-	c := &entities.ContentInput{
+	c := &entities.ContentIn{
 		Content:     f,
-		ContentName: "たろう",
-		Owner:       "aaa",
-		Param: param,
-		Key: &entities.Key{
-			PubKey:  "a",
-			PrivKey: "U9CymreQT4/4ah1iYYBbCc30odE",
-		},
+		ContentName: "aaaaaa",
+		PrivKey:     key.PrivKey,
 	}
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(c); err != nil {
@@ -47,11 +33,25 @@ func TestCreateContent(t *testing.T) {
 	}
 	req := httptest.NewRequest(http.MethodPost, "/api/content", &buf)
 	rec := httptest.NewRecorder()
-	cc := controllers.LoadContentController()
+	cc := controllers.LoadContentController(param)
 	cc.Post(rec, req)
 	asserts.AssertEqual(t, http.StatusOK, rec.Code, rec.Result().Status)
 	res := &entities.Content{}
 	err = json.NewDecoder(rec.Body).Decode(&res)
+	if err != nil {
+		t.Errorf("Failed to Get Content: %v", err)
+	}
+}
+
+func TestGetKey(t *testing.T) {
+	param, _ , _ := mocks.CreateParamSample()
+	req := httptest.NewRequest(http.MethodGet, "/api/content", nil)
+	rec := httptest.NewRecorder()
+	cc := controllers.LoadContentController(param)
+	cc.Get(rec, req)
+	asserts.AssertEqual(t, http.StatusOK, rec.Code, rec.Result().Status)
+	res := &entities.Key{}
+	err := json.NewDecoder(rec.Body).Decode(&res)
 	if err != nil {
 		t.Errorf("Failed to Get Content: %v", err)
 	}

@@ -29,6 +29,18 @@ func (c *Content) Render(content *entities.Content, statusCode int) {
 	c.w.Write(res)
 }
 
+
+func (c *Content) RenderKey(key *entities.Key, statusCode int) {
+	res, err := json.Marshal(key)
+	if err != nil {
+		http.Error(c.w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	c.w.WriteHeader(statusCode)
+	c.w.Header().Set("Content-Type", "application/json")
+	c.w.Write(res)
+}
+
 func (c *Content) RenderError(err error) {
 	c.w.WriteHeader(http.StatusInternalServerError)
 	http.Error(c.w, err.Error(), http.StatusInternalServerError)

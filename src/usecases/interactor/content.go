@@ -2,6 +2,7 @@ package interactor
 
 import (
 	entities "user/src/domains/entities"
+	"user/src/mocks"
 	port "user/src/usecases/port"
 )
 
@@ -26,4 +27,10 @@ func (c *ContentHandler) Upload(contentIn *entities.ContentIn) (*entities.Conten
 	}
 	c.OutputPort.Render(content, 200)
 	return content, nil
+}
+
+func (c *ContentHandler) GetKey() (*entities.Key, error) {
+	_, key, _ := mocks.CreateParamMock()
+	c.OutputPort.RenderKey(key, 200)
+	return key, nil
 }
