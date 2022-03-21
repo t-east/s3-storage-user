@@ -12,7 +12,7 @@ func TestContentMakeMetaData(t *testing.T) {
 	contentInput := &entities.ContentIn{
 		Content:     []byte{},
 		ContentName: "コンテンツ1",
-		PrivKey:     "",
+		PrivKey:     []byte{},
 	}
 	content, err := FakeCrypt.MakeMetaData(contentInput)
 	if err != nil {

@@ -15,7 +15,7 @@ func TestContentUpload(t *testing.T) {
 	contentInput := &entities.ContentIn{
 		Content:     []byte{},
 		ContentName: "コンテンツ1",
-		PrivKey:     "",
+		PrivKey:     []byte{},
 	}
 
 	receipt, err := inputPort.Upload(contentInput)

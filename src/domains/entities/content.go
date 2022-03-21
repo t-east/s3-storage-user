@@ -11,7 +11,7 @@ type Content struct {
 type ContentIn struct {
 	Content     []byte `json:"content"`
 	ContentName string `json:"name"`
-	PrivKey         string   `json:"priv_key"`
+	PrivKey     []byte `json:"priv_key"`
 }
 
 type ContentInput struct {
@@ -23,8 +23,8 @@ type ContentInput struct {
 }
 
 type Key struct {
-	PubKey  string `json:"pub_key"`
-	PrivKey string `json:"priv_key"`
+	PubKey  []byte `json:"pub_key"`
+	PrivKey []byte `json:"priv_key"`
 }
 
 type Param struct {
