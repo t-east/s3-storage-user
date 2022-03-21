@@ -13,11 +13,13 @@ import (
 // }
 
 type contentCrypt struct {
-	Param entities.Param
+	Param *entities.Param
 }
 
-func NewUserCrypt() port.ContentCrypt {
-	return &contentCrypt{}
+func NewUserCrypt(param *entities.Param) port.ContentCrypt {
+	return &contentCrypt{
+		Param: param,
+	}
 }
 
 func (cc *contentCrypt) MakeMetaData(uc *entities.ContentIn) (*entities.Content, error) {
