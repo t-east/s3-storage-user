@@ -12,15 +12,10 @@ func TestContentUpload(t *testing.T) {
 	crypt := mocks.NewContentCryptMock()
 	inputPort := interactor.NewContentInputPort(outputPort, crypt)
 
-	contentInput := &entities.ContentInput{
+	contentInput := &entities.ContentIn{
 		Content:     []byte{},
 		ContentName: "コンテンツ1",
-		Owner:       "オーナー1",
-		Param: &entities.Param{
-			Pairing: "a",
-			G:       []byte("d"),
-			U:       []byte("f"),
-		},
+		PrivKey:     "",
 	}
 
 	receipt, err := inputPort.Upload(contentInput)

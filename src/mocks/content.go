@@ -37,7 +37,7 @@ type ContentSPMock struct {
 type ContentContractMock struct {
 }
 
-func (m *ContentCryptMock) MakeMetaData(input *entities.ContentInput) (*entities.Content, error) {
+func (m *ContentCryptMock) MakeMetaData(input *entities.ContentIn) (*entities.Content, error) {
 	content := &entities.Content{
 		Content:     input.Content,
 		MetaData:    [][]byte{},

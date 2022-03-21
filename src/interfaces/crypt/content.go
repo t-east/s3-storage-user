@@ -20,18 +20,18 @@ func NewUserCrypt() port.ContentCrypt {
 	return &contentCrypt{}
 }
 
-func (cc *contentCrypt) MakeMetaData(uc *entities.ContentInput) (*entities.Content, error) {
-	pairing, err := pbc.NewPairingFromString(uc.Param.Pairing)
+func (cc *contentCrypt) MakeMetaData(uc *entities.ContentIn) (*entities.Content, error) {
+	pairing, err := pbc.NewPairingFromString(cc.Param.Pairing)
 	if err != nil {
 		return nil, err
 	}
-	u := pairing.NewG1().SetBytes(uc.Param.U)
+	u := pairing.NewG1().SetBytes(cc.Param.U)
 	splitCount := 3
 	splitedFile, err := core.SplitSlice(uc.Content, splitCount)
 	if err != nil {
 		return nil, err
 	}
-	privKey := pairing.NewZr().SetBytes([]byte(uc.Key.PrivKey))
+	privKey := pairing.NewZr().SetBytes([]byte(uc.PrivKey))
 
 	// メタデータの作成
 	var metaData [][]byte

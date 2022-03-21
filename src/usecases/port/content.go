@@ -5,7 +5,7 @@ import (
 )
 
 type ContentInputPort interface {
-	Upload(content *entities.ContentInput) (*entities.Content, error)
+	Upload(content *entities.ContentIn) (*entities.Content, error)
 }
 
 type ContentOutputPort interface {
@@ -14,5 +14,5 @@ type ContentOutputPort interface {
 }
 
 type ContentCrypt interface {
-	MakeMetaData(contentInput *entities.ContentInput) (*entities.Content, error)
+	MakeMetaData(contentInput *entities.ContentIn) (*entities.Content, error)
 }

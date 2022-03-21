@@ -28,7 +28,7 @@ func LoadContentController() *ContentController {
 }
 
 func (cc *ContentController) Post(w http.ResponseWriter, r *http.Request) {
-	content := &entities.ContentInput{}
+	content := &entities.ContentIn{}
 	err := json.NewDecoder(r.Body).Decode(&content)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

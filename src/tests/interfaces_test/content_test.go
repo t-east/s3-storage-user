@@ -9,14 +9,10 @@ import (
 // メタデータ作成モックのテスト
 func TestContentMakeMetaData(t *testing.T) {
 	FakeCrypt := mocks.NewContentCryptMock()
-	contentInput := &entities.ContentInput{
+	contentInput := &entities.ContentIn{
 		Content:     []byte{},
 		ContentName: "コンテンツ1",
-		Owner:       "オーナー1",
-		Key: &entities.Key{
-			PubKey:  "",
-			PrivKey: "",
-		},
+		PrivKey:     "",
 	}
 	content, err := FakeCrypt.MakeMetaData(contentInput)
 	if err != nil {

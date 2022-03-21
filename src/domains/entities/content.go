@@ -8,6 +8,12 @@ type Content struct {
 	SplitCount  int      `json:"split_count"`
 }
 
+type ContentIn struct {
+	Content     []byte `json:"content"`
+	ContentName string `json:"name"`
+	PrivKey         string   `json:"priv_key"`
+}
+
 type ContentInput struct {
 	Content     []byte `json:"content"`
 	ContentName string `json:"name"`
