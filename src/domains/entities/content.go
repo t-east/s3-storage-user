@@ -9,17 +9,9 @@ type Content struct {
 }
 
 type ContentIn struct {
-	Content     []byte `json:"content"`
-	ContentName string `json:"name"`
-	PrivKey     []byte `json:"priv_key"`
-}
-
-type ContentInput struct {
-	Content     []byte `json:"content"`
-	ContentName string `json:"name"`
-	Owner       string `json:"owner"`
-	Param       *Param `json:"param"`
-	Key         *Key   `json:"key"`
+	Content []byte `json:"content"`
+	PrivKey []byte `json:"priv_key"`
+	Address string `json:"address"`
 }
 
 type Key struct {
@@ -28,7 +20,7 @@ type Key struct {
 }
 
 type Param struct {
-	Pairing string `json:"paring"`
+	Pairing string `json:"pairing"`
 	G       []byte `json:"g"`
 	U       []byte `json:"u"`
 }

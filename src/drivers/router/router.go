@@ -1,12 +1,13 @@
 package router
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 
 	"user/src/core"
-	"user/src/mocks"
+	"user/src/domains/entities"
 
 	"user/src/interfaces/controllers"
 
@@ -21,11 +22,30 @@ func allowOptionsMiddleware(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+func GetParam() (*entities.Param, error) {
+	url := "http://localhost:4001/api/param"
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	param := &entities.Param{}
+	err = json.NewDecoder(resp.Body).Decode(&param)
+	if err != nil {
+		log.Print(err)
+		return nil, err
+	}
+	return param, err
+}
+
 func ServerHandlerPublic(w http.ResponseWriter, r *http.Request) {
-	param, _, _ := mocks.CreateParamMock()
+	param, err := GetParam()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("connect: connection refused: %v", err.Error()), http.StatusNotFound)
+	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-    w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-    w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 	allowOptionsMiddleware(w, r)
 	var head string
 	_, r.URL.Path = core.ShiftPath(r.URL.Path)

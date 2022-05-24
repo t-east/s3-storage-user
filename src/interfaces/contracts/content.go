@@ -1,7 +1,7 @@
 package contracts
 
 type Param struct {
-	Paring string
+	Pairing string
 	G      string
 	U      string
 }

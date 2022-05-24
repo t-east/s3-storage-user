@@ -17,4 +17,5 @@ type ContentOutputPort interface {
 
 type ContentCrypt interface {
 	MakeMetaData(contentInput *entities.ContentIn) (*entities.Content, error)
+	KeyGen() (*entities.Key, error)
 }

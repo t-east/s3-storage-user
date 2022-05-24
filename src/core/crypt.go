@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math/big"
 	"os"
+	"user/src/domains/entities"
 
 	"github.com/Nik-U/pbc"
 )
@@ -56,24 +57,12 @@ func ReadBinaryFile(filename string, order binary.ByteOrder) []byte {
 	return b
 }
 
-func UseFileRead(fileName string) ([]byte, error) {
+func UseFileRead(fileName string) (*os.File, error) {
 	fp, err := os.Open(fileName)
 	if err != nil {
-		return nil, err
+		return &os.File{}, err
 	}
-	defer fp.Close()
-
-	buf := make([]byte, 64)
-	for {
-		n, err := fp.Read(buf)
-		if n == 0 {
-			break
-		}
-		if err != nil {
-			panic(err)
-		}
-	}
-	return buf, nil
+	return fp, nil
 
 }
 
@@ -100,4 +89,23 @@ func HashChallen(n int, c int, k1, k2 []byte, pairing *pbc.Pairing) ([]int, []*p
 func GetBinaryBySHA256(s string) []byte {
 	r := sha256.Sum256([]byte(s))
 	return r[:]
+}
+
+func CreateParamMock() (*entities.Param, *entities.Key, error) {
+	params := pbc.GenerateA(uint32(160), uint32(512))
+	pairing := params.NewPairing()
+	g := pairing.NewG1().Rand()
+	u := pairing.NewG1().Rand()
+	privKey := pairing.NewZr().Rand()
+	pubKey := pairing.NewG1().MulZn(g, privKey)
+	p := &entities.Param{
+		Pairing: params.String(),
+		G:       g.Bytes(),
+		U:       u.Bytes(),
+	}
+	k := &entities.Key{
+		PubKey:  pubKey.Bytes(),
+		PrivKey: privKey.Bytes(),
+	}
+	return p, k, nil
 }

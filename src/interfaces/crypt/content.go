@@ -16,7 +16,7 @@ type contentCrypt struct {
 	Param *entities.Param
 }
 
-func NewUserCrypt(param *entities.Param) port.ContentCrypt {
+func NewContentCrypt(param *entities.Param) port.ContentCrypt {
 	return &contentCrypt{
 		Param: param,
 	}
@@ -58,7 +58,21 @@ func (cc *contentCrypt) MakeMetaData(uc *entities.ContentIn) (*entities.Content,
 		Content:     uc.Content,
 		MetaData:    metaData,
 		HashedData:  hashData,
-		ContentName: uc.ContentName,
 		SplitCount:  splitCount,
 	}, nil
+}
+
+func (cc *contentCrypt) KeyGen() (*entities.Key, error) {
+	// pairing, err := pbc.NewPairingFromString(cc.Param.Pairing)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// g := pairing.NewG1().SetBytes(cc.Param.G)
+	// privKey := pairing.NewZr().Rand()
+	// pubKey := pairing.NewG1().MulZn(g, privKey)
+	// return &entities.Key{
+	// 	PubKey:  pubKey.Bytes(),
+	// 	PrivKey: privKey.Bytes(),
+	// }, nil
+	return &entities.Key{},nil
 }

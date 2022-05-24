@@ -1,12 +1,11 @@
 package controllers
 
 import (
-	"bytes"
-	"io"
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"user/src/domains/entities"
 	"user/src/interfaces/crypt"
-	"user/src/interfaces/presenters"
 	"user/src/usecases/interactor"
 	"user/src/usecases/port"
 )
@@ -32,33 +31,47 @@ func LoadContentController(param *entities.Param) *ContentController {
 }
 
 func (cc *ContentController) Post(w http.ResponseWriter, r *http.Request) {
-	file, _, err := r.FormFile("content")
+	f, _, err := r.FormFile("content")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-	buf := bytes.NewBuffer(nil)
-	if _, err := io.Copy(buf, file); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	defer f.Close()
+
+	bs, err := ioutil.ReadAll(f) // ファイルの中身を読む
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	content := &entities.ContentIn{
-		Content:     buf.Bytes(),
-		ContentName: r.FormValue("name"),
-		PrivKey:     []byte(r.FormValue("name")),
+		Content: bs,
+		PrivKey: []byte(r.FormValue("privkey")),
+		Address: r.FormValue("address"),
 	}
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	crypt := crypt.NewUserCrypt(cc.Param)
-	outputPort := presenters.NewContentOutputPort(w)
-	inputPort := interactor.NewContentInputPort(outputPort, crypt)
-	inputPort.Upload(content)
+	crypt := crypt.NewContentCrypt(cc.Param)
+	inputPort := interactor.NewContentInputPort(crypt)
+	newContent, err := inputPort.Upload(content)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	res, err := json.Marshal(newContent)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(201)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(res)
 }
 
 func (cc *ContentController) Get(w http.ResponseWriter, r *http.Request) {
-	crypt := crypt.NewUserCrypt(cc.Param)
-	outputPort := presenters.NewContentOutputPort(w)
-	inputPort := interactor.NewContentInputPort(outputPort, crypt)
+	crypt := crypt.NewContentCrypt(cc.Param)
+	inputPort := interactor.NewContentInputPort(crypt)
 	inputPort.GetKey()
 }
 
