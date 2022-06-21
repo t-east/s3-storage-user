@@ -1,12 +1,13 @@
 package controllers
 
 import (
-	"encoding/json"
 	"net/http"
 	"user/src/domains/entities"
 	"user/src/interfaces/crypt"
 	"user/src/usecases/interactor"
 	"user/src/usecases/port"
+
+	"github.com/labstack/echo/v4"
 )
 
 type ContentController struct {
@@ -29,43 +30,23 @@ func LoadContentController(param *entities.Param) *ContentController {
 	}
 }
 
-func (cc *ContentController) Post(w http.ResponseWriter, r *http.Request) {
-	contentIn := &entities.ContentIn{}
-	err := json.NewDecoder(r.Body).Decode(&contentIn)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+func (cc *ContentController) Post(c echo.Context) error {
+	req := &entities.ContentIn{}
+	if err := c.Bind(req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	content := &entities.ContentIn{
+		Content: req.Content,
+		PrivKey: req.PrivKey,
+		Address: req.Address,
 	}
 	crypt := crypt.NewContentCrypt(cc.Param)
-	inputPort := interactor.NewContentInputPort(crypt)
-	newContent, err := inputPort.Upload(contentIn)
+	inputPort := interactor.NewContentInputPort(
+		crypt,
+	)
+	receipt, err := inputPort.MetaGen(content)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	res, err := json.Marshal(newContent)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(201)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(res)
-}
-
-func (cc *ContentController) Get(w http.ResponseWriter, r *http.Request) {
-	crypt := crypt.NewContentCrypt(cc.Param)
-	inputPort := interactor.NewContentInputPort(crypt)
-	inputPort.GetKey()
-}
-
-func (cc *ContentController) Dispatch(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "POST":
-		cc.Post(w, r)
-	case "GET":
-		cc.Get(w, r)
-	default:
-		http.NotFound(w, r)
-	}
+	return c.JSON(http.StatusCreated, receipt)
 }
