@@ -5,7 +5,7 @@ import (
 )
 
 type ContentInputPort interface {
-	Upload(content *entities.ContentIn) (*entities.Content, error)
+	MetaGen(content *entities.ContentIn) (*entities.Content, error)
 	GetKey() (*entities.Key, error)
 }
 
@@ -18,4 +18,8 @@ type ContentOutputPort interface {
 type ContentCrypt interface {
 	MakeMetaData(contentInput *entities.ContentIn) (*entities.Content, error)
 	KeyGen() (*entities.Key, error)
+}
+
+type EthContract interface {
+	GetContractLog() ([]*entities.Content, error)
 }

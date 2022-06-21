@@ -16,7 +16,7 @@ func NewContentInputPort(cryptHandler port.ContentCrypt) port.ContentInputPort {
 	}
 }
 
-func (c *ContentHandler) Upload(contentIn *entities.ContentIn) (*entities.Content, error) {
+func (c *ContentHandler) MetaGen(contentIn *entities.ContentIn) (*entities.Content, error) {
 	//* メタデータ作成
 	content, err := c.Crypt.MakeMetaData(contentIn)
 	if err != nil {
