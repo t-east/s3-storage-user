@@ -1,16 +1,18 @@
 package entities
 
+type SampleData struct {
+	Name   string `json:"name"`
+	Length int    `json:"length"`
+}
+
 type Content struct {
-	Content     []byte   `json:"content"`
-	MetaData    [][]byte `json:"meta_data"`
-	HashedData  [][]byte `json:"hashed_data"`
-	ContentName string   `json:"name"`
-	SplitCount  int      `json:"split_count"`
+	Content    SampleData   `json:"content"`
+	MetaData   [][]byte `json:"meta_data"`
 }
 
 type ContentIn struct {
-	Content []byte `json:"content"`
-	PrivKey []byte `json:"priv_key"`
+	Content SampleData `json:"content"`
+	PrivKey string `json:"priv_key"`
 	Address string `json:"address"`
 }
 

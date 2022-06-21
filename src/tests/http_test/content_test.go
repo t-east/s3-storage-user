@@ -30,9 +30,8 @@ func TestUserHandler_CreateUser(t *testing.T) { // nolint:gocognit
 			name: "Success",
 			setup: func(contentCrypt mock_port.MockContentCrypt) *entities.Content {
 				content := &entities.Content{
-					Content:    []byte{},
-					MetaData:   [][]byte{},
-					SplitCount: 3,
+					Content:  entities.SampleData{},
+					MetaData: [][]byte{},
 				}
 				contentCrypt.EXPECT().MakeMetaData(gomock.Any()).AnyTimes().Return(content, nil)
 				return content

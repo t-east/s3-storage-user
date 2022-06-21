@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"user/src/domains/entities"
 	"user/src/interfaces/crypt"
@@ -31,30 +30,15 @@ func LoadContentController(param *entities.Param) *ContentController {
 }
 
 func (cc *ContentController) Post(w http.ResponseWriter, r *http.Request) {
-	f, _, err := r.FormFile("content")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer f.Close()
-
-	bs, err := ioutil.ReadAll(f) // ファイルの中身を読む
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	content := &entities.ContentIn{
-		Content: bs,
-		PrivKey: []byte(r.FormValue("privkey")),
-		Address: r.FormValue("address"),
-	}
+	contentIn := &entities.ContentIn{}
+	err := json.NewDecoder(r.Body).Decode(&contentIn)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	crypt := crypt.NewContentCrypt(cc.Param)
 	inputPort := interactor.NewContentInputPort(crypt)
-	newContent, err := inputPort.Upload(content)
+	newContent, err := inputPort.Upload(contentIn)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

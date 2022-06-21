@@ -20,7 +20,6 @@ func (c *ContentHandler) Upload(contentIn *entities.ContentIn) (*entities.Conten
 	//* メタデータ作成
 	content, err := c.Crypt.MakeMetaData(contentIn)
 	if err != nil {
-		c.OutputPort.RenderError(err)
 		return nil, err
 	}
 	return content, nil

@@ -1,6 +1,9 @@
 package crypt
 
 import (
+	"bytes"
+	"encoding/gob"
+	"log"
 	"user/src/core"
 	"user/src/domains/entities"
 	"user/src/usecases/port"
@@ -27,9 +30,16 @@ func (cc *contentCrypt) MakeMetaData(uc *entities.ContentIn) (*entities.Content,
 	if err != nil {
 		return nil, err
 	}
+	var cb bytes.Buffer        // Stand-in for a network connection
+	enc := gob.NewEncoder(&cb) // Will write to network.
+	err = enc.Encode(uc.Content)
+	if err != nil {
+		log.Fatal("encode error:", err)
+	}
+	contentByte := cb.Bytes()
 	u := pairing.NewG1().SetBytes(cc.Param.U)
 	splitCount := 3
-	splitedFile, err := core.SplitSlice(uc.Content, splitCount)
+	splitedFile, err := core.SplitSlice(contentByte, splitCount)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +47,6 @@ func (cc *contentCrypt) MakeMetaData(uc *entities.ContentIn) (*entities.Content,
 
 	// メタデータの作成
 	var metaData [][]byte
-	var hashData [][]byte
 	metaToHash := ""
 	for i := 0; i < len(splitedFile); i++ {
 		m := pairing.NewG1().SetFromHash(splitedFile[i])
@@ -51,14 +60,11 @@ func (cc *contentCrypt) MakeMetaData(uc *entities.ContentIn) (*entities.Content,
 
 		metaData = append(metaData, meta.Bytes())
 		metaToHash = metaToHash + meta.String()
-		hashData = append(hashData, mm)
 	}
 
 	return &entities.Content{
-		Content:     uc.Content,
-		MetaData:    metaData,
-		HashedData:  hashData,
-		SplitCount:  splitCount,
+		Content:    uc.Content,
+		MetaData:   metaData,
 	}, nil
 }
 
@@ -74,5 +80,5 @@ func (cc *contentCrypt) KeyGen() (*entities.Key, error) {
 	// 	PubKey:  pubKey.Bytes(),
 	// 	PrivKey: privKey.Bytes(),
 	// }, nil
-	return &entities.Key{},nil
+	return &entities.Key{}, nil
 }

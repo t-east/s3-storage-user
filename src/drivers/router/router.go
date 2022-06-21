@@ -39,7 +39,8 @@ func GetParam() (*entities.Param, error) {
 }
 
 func ServerHandlerPublic(w http.ResponseWriter, r *http.Request) {
-	param, err := GetParam()
+	// param, err := GetParam()
+	param, _, err := core.CreateParamMock()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("connect: connection refused: %v", err.Error()), http.StatusNotFound)
 	}
