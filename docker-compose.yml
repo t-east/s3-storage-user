@@ -13,7 +13,7 @@ networks:
 services:
   app:
     container_name: user
-    build: .
+    image: go_pbc
     tty: true
     volumes:
       - .:/app
