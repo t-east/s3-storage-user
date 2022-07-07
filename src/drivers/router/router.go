@@ -22,7 +22,9 @@ func NewServer(cc controllers.ContentController) *echo.Echo {
 		return c.NoContent(http.StatusOK)
 	})
 	api := e.Group("/api")
-	api.POST("/content/meta", cc.Post)
+	api.POST("/content/meta", cc.MetaGen)
+	api.POST("/key", cc.SetKey)
+	api.POST("/log", cc.GetLog)
 
 	return e
 }
