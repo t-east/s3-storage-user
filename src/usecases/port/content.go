@@ -6,13 +6,8 @@ import (
 
 type ContentInputPort interface {
 	MetaGen(content *entities.ContentIn) (*entities.Content, error)
-	GetKey() (*entities.Key, error)
-}
-
-type ContentOutputPort interface {
-	Render(*entities.Content, int)
-	RenderKey(*entities.Key, int)
-	RenderError(error)
+	GetLog() (*entities.Content, error)
+	SetKey(key, ethPrivKey string)  error
 }
 
 type ContentCrypt interface {
@@ -20,6 +15,7 @@ type ContentCrypt interface {
 	KeyGen() (*entities.Key, error)
 }
 
-type EthContract interface {
+type ContentContract interface {
 	GetContractLog() ([]*entities.Content, error)
+	SetKey(key, address string) error
 }

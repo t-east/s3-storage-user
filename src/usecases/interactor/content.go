@@ -6,13 +6,14 @@ import (
 )
 
 type ContentHandler struct {
-	OutputPort port.ContentOutputPort
-	Crypt      port.ContentCrypt
+	Crypt    port.ContentCrypt
+	Contract port.ContentContract
 }
 
-func NewContentInputPort(cryptHandler port.ContentCrypt) port.ContentInputPort {
+func NewContentInputPort(cryptHandler port.ContentCrypt, contractHandler port.ContentContract) port.ContentInputPort {
 	return &ContentHandler{
-		Crypt:      cryptHandler,
+		Crypt:    cryptHandler,
+		Contract: contractHandler,
 	}
 }
 
@@ -25,10 +26,14 @@ func (c *ContentHandler) MetaGen(contentIn *entities.ContentIn) (*entities.Conte
 	return content, nil
 }
 
-func (c *ContentHandler) GetKey() (*entities.Key, error) {
-	key, err := c.Crypt.KeyGen()
+func (c *ContentHandler) SetKey(pubKey, ethPrivKey string) error {
+	err := c.Contract.SetKey(pubKey, ethPrivKey)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return key, nil
+	return nil
+}
+
+func (c *ContentHandler) GetLog() (*entities.Content, error) {
+	return &entities.Content{}, nil
 }
