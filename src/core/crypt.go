@@ -104,8 +104,8 @@ func CreateParamMock() (*entities.Param, *entities.Key, error) {
 		U:       u.Bytes(),
 	}
 	k := &entities.Key{
-		PubKey:  pubKey.Bytes(),
-		PrivKey: privKey.Bytes(),
+		PubKey:  string(pubKey.Bytes()),
+		PrivKey: string(privKey.Bytes()),
 	}
 	return p, k, nil
 }

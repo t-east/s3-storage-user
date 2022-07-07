@@ -17,8 +17,8 @@ type ContentIn struct {
 }
 
 type Key struct {
-	PubKey  []byte `json:"pub_key"`
-	PrivKey []byte `json:"priv_key"`
+	PubKey  string `json:"pub_key"`
+	PrivKey string `json:"priv_key"`
 }
 
 type Param struct {
