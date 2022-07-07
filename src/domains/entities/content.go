@@ -23,6 +23,6 @@ type Key struct {
 
 type Param struct {
 	Pairing string `json:"pairing"`
-	G       []byte `json:"g"`
-	U       []byte `json:"u"`
+	G       string `json:"g"`
+	U       string `json:"u"`
 }

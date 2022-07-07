@@ -37,7 +37,7 @@ func (cc *contentCrypt) MakeMetaData(uc *entities.ContentIn) (*entities.Content,
 		log.Fatal("encode error:", err)
 	}
 	contentByte := cb.Bytes()
-	u := pairing.NewG1().SetBytes(cc.Param.U)
+	u := pairing.NewG1().SetBytes([]byte(cc.Param.U))
 	splitCount := 3
 	splitedFile, err := core.SplitSlice(contentByte, splitCount)
 	if err != nil {
