@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"user/src/domains/entities"
+	"user/src/interfaces/contracts"
 	"user/src/interfaces/crypt"
 	"user/src/usecases/interactor"
 	"user/src/usecases/port"
@@ -13,12 +14,10 @@ import (
 type ContentController struct {
 	// -> crypt.NewContentCrypt
 	CryptFactory func() port.ContentCrypt
-	// -> presenter.NewContentOutputPort
-	OutputFactory func(w http.ResponseWriter) port.ContentOutputPort
 	// -> interactor.NewContentInputPort
 	InputFactory func(
-		o port.ContentOutputPort,
 		cr port.ContentCrypt,
+		cc port.ContentContract,
 		// co port.ContentContracts,
 	) port.ContentInputPort
 	Param *entities.Param
