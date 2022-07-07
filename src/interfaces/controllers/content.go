@@ -30,7 +30,7 @@ func LoadContentController(param *entities.Param) *ContentController {
 	}
 }
 
-func (cc *ContentController) Post(c echo.Context) error {
+func (cc *ContentController) MetaGen(c echo.Context) error {
 	req := &entities.ContentIn{}
 	if err := c.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -41,12 +41,51 @@ func (cc *ContentController) Post(c echo.Context) error {
 		Address: req.Address,
 	}
 	crypt := crypt.NewContentCrypt(cc.Param)
+	contract := contracts.NewContentContracts()
 	inputPort := interactor.NewContentInputPort(
 		crypt,
+		contract,
 	)
 	receipt, err := inputPort.MetaGen(content)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusCreated, receipt)
+}
+
+type SetKeyReq struct {
+	PubKey     string `json:"pub_key"`
+	EthPrivKey string `json:"eth_priv_key"`
+}
+
+func (cc *ContentController) SetKey(c echo.Context) error {
+	req := &SetKeyReq{}
+	if err := c.Bind(req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	crypt := crypt.NewContentCrypt(cc.Param)
+	contract := contracts.NewContentContracts()
+	inputPort := interactor.NewContentInputPort(
+		crypt,
+		contract,
+	)
+	err := inputPort.SetKey(req.PubKey, req.EthPrivKey)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	return c.NoContent(http.StatusCreated)
+}
+
+func (cc *ContentController) GetLog(c echo.Context) error {
+	crypt := crypt.NewContentCrypt(cc.Param)
+	contract := contracts.NewContentContracts()
+	inputPort := interactor.NewContentInputPort(
+		crypt,
+		contract,
+	)
+	content, err := inputPort.GetLog()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusOK, content)
 }
