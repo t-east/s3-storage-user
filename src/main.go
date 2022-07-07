@@ -10,7 +10,7 @@ import (
 func realMain() {
 	param, err := ethereum.GetParam()
 	if err != nil {
-		log.Print(err)
+		log.Fatal(err)
 	}
 	cc := *controllers.LoadContentController(param)
 
