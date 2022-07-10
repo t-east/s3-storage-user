@@ -100,12 +100,12 @@ func CreateParamMock() (*entities.Param, *entities.Key, error) {
 	pubKey := pairing.NewG1().MulZn(g, privKey)
 	p := &entities.Param{
 		Pairing: params.String(),
-		G:       string(g.Bytes()),
-		U:       string(u.Bytes()),
+		G:       g.Bytes(),
+		U:       u.Bytes(),
 	}
 	k := &entities.Key{
-		PubKey:  string(pubKey.Bytes()),
-		PrivKey: string(privKey.Bytes()),
+		PubKey:  pubKey.Bytes(),
+		PrivKey: privKey.Bytes(),
 	}
 	return p, k, nil
 }

@@ -1,6 +1,7 @@
 package interactor
 
 import (
+	"log"
 	entities "user/src/domains/entities"
 	port "user/src/usecases/port"
 )
@@ -17,23 +18,37 @@ func NewContentInputPort(cryptHandler port.ContentCrypt, contractHandler port.Co
 	}
 }
 
-func (c *ContentHandler) MetaGen(contentIn *entities.ContentIn) (*entities.Content, error) {
+func (c *ContentHandler) MetaGen(contentIn *entities.ContentIn) (*entities.Content, []byte, []byte, error) {
 	//* メタデータ作成
-	content, err := c.Crypt.MakeMetaData(contentIn)
+	content, privKey, pubKey, err := c.Crypt.MakeMetaData(contentIn)
 	if err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
-	return content, nil
+	return content, privKey, pubKey, nil
 }
 
-func (c *ContentHandler) SetKey(pubKey, ethPrivKey string) error {
-	err := c.Contract.SetKey(pubKey, ethPrivKey)
+func (c *ContentHandler) SetKey(pubKey []byte) error {
+	err := c.Contract.SetKey(pubKey)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *ContentHandler) GetLog() (*entities.Content, error) {
-	return &entities.Content{}, nil
+func (c *ContentHandler) GetLog() (*entities.Log, error) {
+	contentIDs, _:= c.Contract.ListContentIDs()
+	log.Print(contentIDs)
+	// cl, err := c.Contract.ListContractLog()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// al, err := c.Contract.ListAuditLog(contentIDs)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	return &entities.Log{
+		// AuditLog:   al,
+		// ContentLog: cl,
+	}, nil
 }
