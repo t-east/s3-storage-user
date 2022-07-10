@@ -66,8 +66,9 @@ func ConnectParamNetWork() (*param.Contracts, *ethclient.Client) {
 	ganaHost := os.Getenv("GANA_HOST")
 	client, err := ethclient.Dial(ganaHost)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
+
 	conn, err := param.NewContracts(common.HexToAddress(contractAddress), client)
 	if err != nil {
 		panic(err)
