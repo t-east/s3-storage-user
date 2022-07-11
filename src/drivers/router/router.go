@@ -21,6 +21,12 @@ func NewServer(cc controllers.ContentController) *echo.Echo {
 	e.GET("/health", func(c echo.Context) error {
 		return c.NoContent(http.StatusOK)
 	})
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+        AllowOrigins: []string{"*"},
+        AllowMethods: []string{"*"},
+    }))
+
 	api := e.Group("/api")
 	api.POST("/content/meta", cc.MetaGen)
 	api.GET("/content", cc.GetLog)
