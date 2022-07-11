@@ -67,3 +67,11 @@ type Log struct {
 	AuditLog   []*AuditLog            `json:"audit_log"`
 	ContentLog []*ContentInBlockChain `json:"content_log"`
 }
+
+type ContentForMock struct {
+	ID       string   `json:"id"`
+	Address  string   `json:"address"`
+	Content  Point    `json:"content"`
+	MetaData [][]byte `json:"metadata"`
+	HashData [][]byte `json:"hashdata"`
+}

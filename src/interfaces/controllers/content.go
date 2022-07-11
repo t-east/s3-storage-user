@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"user/src/domains/entities"
@@ -57,9 +58,10 @@ func (cc *ContentController) MetaGen(c echo.Context) error {
 		os.Exit(1)
 	}
 
-	var fc entities.Content
+	var fc entities.ContentForMock
 
 	json.Unmarshal(raw, &fc)
+	log.Print(fc)
 	return c.JSON(http.StatusCreated, MetaRes{
 		Receipt: entities.Content{
 			Content:  req.Content,
