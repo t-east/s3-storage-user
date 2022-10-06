@@ -1,14 +1,10 @@
 package crypt
 
 import (
-	"bytes"
-	"encoding/gob"
-	"log"
 	"user/src/core"
 	"user/src/domains/entities"
+	"user/src/interfaces/crypt/schema"
 	"user/src/usecases/port"
-
-	"github.com/Nik-U/pbc"
 )
 
 // type UserCrypt interface {
@@ -26,37 +22,35 @@ func NewContentCrypt(param *entities.Param) port.CryptPort {
 }
 
 func (cc *contentCrypt) MakeMetaData(uc *entities.ContentCreateMetaData) (*entities.MetaData, error) {
-	pairing, err := pbc.NewPairingFromString(cc.Param.Pairing)
+	//* Gen Param
+	param, err := schema.GeneratePairingParam(cc.Param)
 	if err != nil {
 		return nil, err
 	}
-	var cb bytes.Buffer        // Stand-in for a network connection
-	enc := gob.NewEncoder(&cb) // Will write to network.
-	err = enc.Encode(uc.Content)
-	if err != nil {
-		log.Fatal("encode error:", err)
-	}
-	contentByte := cb.Bytes()
-	u := pairing.NewG1().SetBytes([]byte(cc.Param.U))
-	splitCount := 3
-	splitedFile, err := core.SplitSlice(contentByte, splitCount)
+	key, err := param.GeneratePairingKey(uc.PrivKey)
 	if err != nil {
 		return nil, err
 	}
-	privKey := pairing.NewZr().SetBytes(uc.PrivKey)
 
-	// メタデータの作成
+	//* Slice Content
+	splitCount := 3
+	splitFile, err := schema.SplitContent(uc.Content, splitCount)
+	if err != nil {
+		return nil, err
+	}
+
+	//* Gen MetaData
 	var metaData [][]byte
 	metaToHash := ""
-	for i := 0; i < len(splitedFile); i++ {
-		m := pairing.NewG1().SetFromHash(splitedFile[i])
+	for i := 0; i < len(splitFile); i++ {
+		m := param.Pairing.NewG1().SetFromHash(splitFile[i])
 
 		mm := core.GetBinaryBySHA256(m.X().String())
-		M := pairing.NewG1().SetBytes(mm)
+		M := param.Pairing.NewG1().SetBytes(mm)
 
-		um := pairing.NewG1().PowBig(u, m.X())
-		temp := pairing.NewG1().Mul(um, M)
-		meta := pairing.NewG1().MulZn(temp, privKey)
+		um := param.Pairing.NewG1().PowBig(param.U, m.X())
+		temp := param.Pairing.NewG1().Mul(um, M)
+		meta := param.Pairing.NewG1().MulZn(temp, key.PrivKey)
 
 		metaData = append(metaData, meta.Bytes())
 		metaToHash = metaToHash + meta.String()
@@ -66,16 +60,15 @@ func (cc *contentCrypt) MakeMetaData(uc *entities.ContentCreateMetaData) (*entit
 }
 
 func (cc *contentCrypt) KeyGen() (*entities.Key, error) {
-	// pairing, err := pbc.NewPairingFromString(cc.Param.Pairing)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// g := pairing.NewG1().SetBytes(cc.Param.G)
-	// privKey := pairing.NewZr().Rand()
-	// pubKey := pairing.NewG1().MulZn(g, privKey)
-	// return &entities.Key{
-	// 	PubKey:  pubKey.Bytes(),
-	// 	PrivKey: privKey.Bytes(),
-	// }, nil
-	return &entities.Key{}, nil
+	//* Gen Param
+	param, err := schema.GeneratePairingParam(cc.Param)
+	if err != nil {
+		return nil, err
+	}
+	privKey := param.Pairing.NewZr().Rand()
+	pubKey := param.Pairing.NewG1().MulZn(param.G, privKey)
+	return &entities.Key{
+		PubKey:  pubKey.Bytes(),
+		PrivKey: privKey.Bytes(),
+	}, nil
 }
