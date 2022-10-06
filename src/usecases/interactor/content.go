@@ -1,7 +1,6 @@
 package interactor
 
 import (
-	"log"
 	entities "user/src/domains/entities"
 	port "user/src/usecases/port"
 )
@@ -35,20 +34,23 @@ func (c *ContentHandler) SetKey(pubKey []byte) error {
 	return nil
 }
 
-func (c *ContentHandler) ListLog() (*entities.Log, error) {
+func (c *ContentHandler) ListLog() ([]*entities.Log, error) {
 	contentIDs, _ := c.Contract.ListContentIDs()
-	log.Print(contentIDs)
-	// cl, err := c.Contract.ListContractLog()
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// al, err := c.Contract.ListAuditLog(contentIDs)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	cl, err := c.Contract.ListContractLog()
+	if err != nil {
+		return nil, err
+	}
+	al, err := c.Contract.ListAuditLog(contentIDs)
+	if err != nil {
+		return nil, err
+	}
 
-	return &entities.Log{
-		// AuditLog:   al,
-		// ContentLog: cl,
-	}, nil
+	var logs []*entities.Log
+	for i := 0; i < len(cl) ; i++ {
+		logs = append(logs, &entities.Log{
+			AuditLog:   al[i],
+			ContentLog: cl[i],
+		})
+	}
+	return logs, nil
 }

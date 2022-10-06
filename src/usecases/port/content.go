@@ -6,7 +6,7 @@ import (
 
 type ContentInputPort interface {
 	MetaGen(content *entities.ContentCreateMetaData) (*entities.MetaData, error)
-	ListLog() (*entities.Log, error)
+	ListLog() ([]*entities.Log, error)
 	SetKey(key []byte) error
 }
 
