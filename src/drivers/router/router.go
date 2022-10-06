@@ -29,19 +29,3 @@ func NewServer(cc controllers.ContentController) *echo.Echo {
 
 	return e
 }
-
-// func GetParam() (*entities.Param, error) {
-// 	url := "http://localhost:4001/api/param"
-// 	resp, err := http.Get(url)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	defer resp.Body.Close()
-// 	param := &entities.Param{}
-// 	err = json.NewDecoder(resp.Body).Decode(&param)
-// 	if err != nil {
-// 		log.Print(err)
-// 		return nil, err
-// 	}
-// 	return param, err
-// }
