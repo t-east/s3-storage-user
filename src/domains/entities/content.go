@@ -17,14 +17,3 @@ type ContentCreateMetaData struct {
 	Address string `json:"address"`
 }
 
-type ContentLog struct {
-	HashedData [][]byte `json:"hashed_data"`
-	ContentId  string   `json:"content_id"`
-	Owner      string   `json:"owner"`
-}
-
-type Log struct {
-	AuditLog   []*AuditLog   `json:"audit_log"`
-	ContentLog []*ContentLog `json:"content_log"`
-}
-
