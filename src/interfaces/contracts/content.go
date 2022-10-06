@@ -10,24 +10,20 @@ import (
 
 type ContentContract struct{}
 
-func NewContentContracts() port.ContentContract {
+func NewContentContracts() port.ContractPort {
 	return &ContentContract{}
 }
 
-func (cc *ContentContract) ListContractLog() ([]*entities.ContentInBlockChain, error) {
+func (cc *ContentContract) ListContractLog() ([]*entities.ContentLog, error) {
 	conn, _ := ethereum.ConnectContentNetWork()
 	list, err := conn.ListContentLog(&bind.CallOpts{})
 	if err != nil {
 		return nil, err
 	}
-	var logs []*entities.ContentInBlockChain
-	for i := 0; i < len(list); i++ {
-		logs = append(logs, &entities.ContentInBlockChain{
-			HashedData: list[i].Hash,
-			ContentId:  list[i].LogId,
-		})
+	logSchema := ContentLogSchema{
+		Logs: list,
 	}
-	return logs, nil
+	return logSchema.BindSchema(), nil
 }
 
 func (cc *ContentContract) SetKey(key []byte) error {
@@ -51,7 +47,7 @@ func (cc *ContentContract) GetAuditLog(id string) (*entities.AuditLog, error) {
 		return nil, err
 	}
 	return &entities.AuditLog{
-		Chal: &entities.Chal{
+		Challenge: &entities.Challenge{
 			ContentId: id,
 			C:         int(a.Chal),
 			K1:        a.K1,
@@ -81,7 +77,7 @@ func (cc *ContentContract) ListAuditLog(ids []string) ([]*entities.AuditLog, err
 	var logs []*entities.AuditLog
 	for i := 0; i < len(al); i++ {
 		logs = append(logs, &entities.AuditLog{
-			Chal: &entities.Chal{
+			Challenge: &entities.Challenge{
 				ContentId: ids[i],
 				C:         int(al[i].Chal),
 				K1:        al[i].K1,

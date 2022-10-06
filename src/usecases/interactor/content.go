@@ -7,24 +7,24 @@ import (
 )
 
 type ContentHandler struct {
-	Crypt    port.ContentCrypt
-	Contract port.ContentContract
+	Crypt    port.CryptPort
+	Contract port.ContractPort
 }
 
-func NewContentInputPort(cryptHandler port.ContentCrypt, contractHandler port.ContentContract) port.ContentInputPort {
+func NewContentInputPort(cryptHandler port.CryptPort, contractHandler port.ContractPort) port.ContentInputPort {
 	return &ContentHandler{
 		Crypt:    cryptHandler,
 		Contract: contractHandler,
 	}
 }
 
-func (c *ContentHandler) MetaGen(contentIn *entities.ContentIn) (*entities.Content, []byte, []byte, error) {
+func (c *ContentHandler) MetaGen(contentCreateMetaData *entities.ContentCreateMetaData) (*entities.MetaData, error) {
 	//* メタデータ作成
-	content, privKey, pubKey, err := c.Crypt.MakeMetaData(contentIn)
+	metaData, err := c.Crypt.MakeMetaData(contentCreateMetaData)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
-	return content, privKey, pubKey, nil
+	return metaData,  nil
 }
 
 func (c *ContentHandler) SetKey(pubKey []byte) error {
@@ -35,8 +35,8 @@ func (c *ContentHandler) SetKey(pubKey []byte) error {
 	return nil
 }
 
-func (c *ContentHandler) GetLog() (*entities.Log, error) {
-	contentIDs, _:= c.Contract.ListContentIDs()
+func (c *ContentHandler) ListLog() (*entities.Log, error) {
+	contentIDs, _ := c.Contract.ListContentIDs()
 	log.Print(contentIDs)
 	// cl, err := c.Contract.ListContractLog()
 	// if err != nil {

@@ -12,23 +12,23 @@ import (
 )
 
 // type UserCrypt interface {
-// 	MakeMetaData(content entities.ContentInput) (entities.Content, error)
+// 	MakeMetaData(content entities.ContentCreateMetaDataput) (entities.Content, error)
 // }
 
 type contentCrypt struct {
 	Param *entities.Param
 }
 
-func NewContentCrypt(param *entities.Param) port.ContentCrypt {
+func NewContentCrypt(param *entities.Param) port.CryptPort {
 	return &contentCrypt{
 		Param: param,
 	}
 }
 
-func (cc *contentCrypt) MakeMetaData(uc *entities.ContentIn) (*entities.Content, []byte, []byte, error) {
+func (cc *contentCrypt) MakeMetaData(uc *entities.ContentCreateMetaData) (*entities.MetaData, error) {
 	pairing, err := pbc.NewPairingFromString(cc.Param.Pairing)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
 	var cb bytes.Buffer        // Stand-in for a network connection
 	enc := gob.NewEncoder(&cb) // Will write to network.
@@ -38,14 +38,12 @@ func (cc *contentCrypt) MakeMetaData(uc *entities.ContentIn) (*entities.Content,
 	}
 	contentByte := cb.Bytes()
 	u := pairing.NewG1().SetBytes([]byte(cc.Param.U))
-	g := pairing.NewG1().SetBytes([]byte(cc.Param.G))
 	splitCount := 3
 	splitedFile, err := core.SplitSlice(contentByte, splitCount)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
 	privKey := pairing.NewZr().SetBytes(uc.PrivKey)
-	pubKey := pairing.NewG1().MulZn(g, privKey)
 
 	// メタデータの作成
 	var metaData [][]byte
@@ -64,10 +62,7 @@ func (cc *contentCrypt) MakeMetaData(uc *entities.ContentIn) (*entities.Content,
 		metaToHash = metaToHash + meta.String()
 	}
 
-	return &entities.Content{
-		Content:    uc.Content,
-		MetaData:   metaData,
-	}, privKey.Bytes(),pubKey.Bytes(), nil
+	return (*entities.MetaData)(&metaData), nil
 }
 
 func (cc *contentCrypt) KeyGen() (*entities.Key, error) {

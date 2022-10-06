@@ -13,11 +13,11 @@ import (
 
 type ContentController struct {
 	// -> crypt.NewContentCrypt
-	CryptFactory func() port.ContentCrypt
-	// -> interactor.NewContentInputPort
+	CryptFactory func() port.CryptPort
+	// -> interactor.NewContentCreateMetaDataputPort
 	InputFactory func(
-		cr port.ContentCrypt,
-		cc port.ContentContract,
+		cr port.CryptPort,
+		cc port.ContractPort,
 		// co port.ContentContracts,
 	) port.ContentInputPort
 	Param *entities.Param
@@ -30,11 +30,11 @@ func LoadContentController(param *entities.Param) *ContentController {
 }
 
 func (cc *ContentController) MetaGen(c echo.Context) error {
-	req := &entities.ContentIn{}
+	req := &entities.ContentCreateMetaData{}
 	if err := c.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	content := &entities.ContentIn{
+	content := &entities.ContentCreateMetaData{
 		Content: req.Content,
 		PrivKey: req.PrivKey,
 		Address: req.Address,
@@ -53,7 +53,7 @@ func (cc *ContentController) MetaGen(c echo.Context) error {
 }
 
 type SetKeyReq struct {
-	PubKey     string `json:"pub_key"`
+	PubKey     []byte `json:"pub_key"`
 	EthPrivKey string `json:"eth_priv_key"`
 }
 
@@ -68,7 +68,7 @@ func (cc *ContentController) SetKey(c echo.Context) error {
 		crypt,
 		contract,
 	)
-	err := inputPort.SetKey(req.PubKey, req.EthPrivKey)
+	err := inputPort.SetKey(req.PubKey)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
@@ -82,7 +82,7 @@ func (cc *ContentController) GetLog(c echo.Context) error {
 		crypt,
 		contract,
 	)
-	content, err := inputPort.GetLog()
+	content, err := inputPort.ListLog()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}

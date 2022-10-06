@@ -3,7 +3,6 @@ package core
 import (
 	"crypto/md5"
 	"crypto/sha256"
-	"encoding/binary"
 	"encoding/hex"
 	"fmt"
 	"math/big"
@@ -41,21 +40,6 @@ func MD5(s string) []byte {
 	return []byte(hex.EncodeToString(hash[:]))
 }
 
-func ReadBinaryFile(filename string, order binary.ByteOrder) []byte {
-	// ファイルを開く
-	file, _ := os.Open(filename)
-
-	defer file.Close()
-	fi, _ := file.Stat()
-	//fmt.Printf("%s",file)
-	fileSize := int(fi.Size())
-
-	// ファイルから1バイト読み出し
-	//bytesList := make([]byte, fileSize)
-	b := make([]byte, fileSize)
-	file.Read(b)
-	return b
-}
 
 func UseFileRead(fileName string) (*os.File, error) {
 	fp, err := os.Open(fileName)
