@@ -1,7 +1,6 @@
 package crypt
 
 import (
-	"user/src/core"
 	"user/src/domains/entities"
 	"user/src/interfaces/crypt/schema"
 	"user/src/usecases/port"
@@ -45,7 +44,7 @@ func (cc *contentCrypt) MakeMetaData(uc *entities.ContentCreateMetaData) (*entit
 	for i := 0; i < len(splitFile); i++ {
 		m := param.Pairing.NewG1().SetFromHash(splitFile[i])
 
-		mm := core.GetBinaryBySHA256(m.X().String())
+		mm := schema.GetBinaryBySHA256(m.X().String())
 		M := param.Pairing.NewG1().SetBytes(mm)
 
 		um := param.Pairing.NewG1().PowBig(param.U, m.X())
