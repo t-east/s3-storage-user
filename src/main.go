@@ -2,17 +2,16 @@ package main
 
 import (
 	"log"
-	"user/src/core"
+	"user/src/drivers/ethereum"
 	router "user/src/drivers/router"
 	"user/src/interfaces/controllers"
 )
 
 func realMain() {
-	param, _, err := core.CreateParamMock()
+	param, err := ethereum.GetParam()
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Print(param)
 	cc := *controllers.LoadContentController(param)
 
 	e := router.NewServer(cc)

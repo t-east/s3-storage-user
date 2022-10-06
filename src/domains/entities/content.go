@@ -5,24 +5,15 @@ type Point struct {
 	Y int `json:"y"`
 }
 
+type MetaData [][]byte
 type Content struct {
-	Content    Point   `json:"content"`
-	MetaData   [][]byte `json:"meta_data"`
+	Content  Point    `json:"content"`
+	MetaData MetaData `json:"meta_data"`
 }
 
-type ContentIn struct {
-	Content Point `json:"content"`
-	PrivKey string `json:"priv_key"`
+type ContentCreateMetaData struct {
+	Content Point  `json:"content"`
+	PrivKey []byte `json:"priv_key"`
 	Address string `json:"address"`
 }
 
-type Key struct {
-	PubKey  string `json:"pub_key"`
-	PrivKey string `json:"priv_key"`
-}
-
-type Param struct {
-	Pairing string `json:"pairing"`
-	G       []byte `json:"g"`
-	U       []byte `json:"u"`
-}

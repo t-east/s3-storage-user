@@ -11,31 +11,31 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockContentInputPort is a mock of ContentInputPort interface.
-type MockContentInputPort struct {
+// MockContentCreateMetaDataputPort is a mock of ContentCreateMetaDataputPort interface.
+type MockContentCreateMetaDataputPort struct {
 	ctrl     *gomock.Controller
-	recorder *MockContentInputPortMockRecorder
+	recorder *MockContentCreateMetaDataputPortMockRecorder
 }
 
-// MockContentInputPortMockRecorder is the mock recorder for MockContentInputPort.
-type MockContentInputPortMockRecorder struct {
-	mock *MockContentInputPort
+// MockContentCreateMetaDataputPortMockRecorder is the mock recorder for MockContentCreateMetaDataputPort.
+type MockContentCreateMetaDataputPortMockRecorder struct {
+	mock *MockContentCreateMetaDataputPort
 }
 
-// NewMockContentInputPort creates a new mock instance.
-func NewMockContentInputPort(ctrl *gomock.Controller) *MockContentInputPort {
-	mock := &MockContentInputPort{ctrl: ctrl}
-	mock.recorder = &MockContentInputPortMockRecorder{mock}
+// NewMockContentCreateMetaDataputPort creates a new mock instance.
+func NewMockContentCreateMetaDataputPort(ctrl *gomock.Controller) *MockContentCreateMetaDataputPort {
+	mock := &MockContentCreateMetaDataputPort{ctrl: ctrl}
+	mock.recorder = &MockContentCreateMetaDataputPortMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockContentInputPort) EXPECT() *MockContentInputPortMockRecorder {
+func (m *MockContentCreateMetaDataputPort) EXPECT() *MockContentCreateMetaDataputPortMockRecorder {
 	return m.recorder
 }
 
 // GetKey mocks base method.
-func (m *MockContentInputPort) GetKey() (*entities.Key, error) {
+func (m *MockContentCreateMetaDataputPort) GetKey() (*entities.Key, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetKey")
 	ret0, _ := ret[0].(*entities.Key)
@@ -44,13 +44,13 @@ func (m *MockContentInputPort) GetKey() (*entities.Key, error) {
 }
 
 // GetKey indicates an expected call of GetKey.
-func (mr *MockContentInputPortMockRecorder) GetKey() *gomock.Call {
+func (mr *MockContentCreateMetaDataputPortMockRecorder) GetKey() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetKey", reflect.TypeOf((*MockContentInputPort)(nil).GetKey))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetKey", reflect.TypeOf((*MockContentCreateMetaDataputPort)(nil).GetKey))
 }
 
 // Upload mocks base method.
-func (m *MockContentInputPort) Upload(content *entities.ContentIn) (*entities.Content, error) {
+func (m *MockContentCreateMetaDataputPort) Upload(content *entities.ContentCreateMetaData) (*entities.Content, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Upload", content)
 	ret0, _ := ret[0].(*entities.Content)
@@ -59,9 +59,9 @@ func (m *MockContentInputPort) Upload(content *entities.ContentIn) (*entities.Co
 }
 
 // Upload indicates an expected call of Upload.
-func (mr *MockContentInputPortMockRecorder) Upload(content interface{}) *gomock.Call {
+func (mr *MockContentCreateMetaDataputPortMockRecorder) Upload(content interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Upload", reflect.TypeOf((*MockContentInputPort)(nil).Upload), content)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Upload", reflect.TypeOf((*MockContentCreateMetaDataputPort)(nil).Upload), content)
 }
 
 // MockContentOutputPort is a mock of ContentOutputPort interface.
@@ -162,16 +162,16 @@ func (mr *MockContentCryptMockRecorder) KeyGen() *gomock.Call {
 }
 
 // MakeMetaData mocks base method.
-func (m *MockContentCrypt) MakeMetaData(contentInput *entities.ContentIn) (*entities.Content, error) {
+func (m *MockContentCrypt) MakeMetaData(contentCreateMetaDataput *entities.ContentCreateMetaData) (*entities.Content, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "MakeMetaData", contentInput)
+	ret := m.ctrl.Call(m, "MakeMetaData", contentCreateMetaDataput)
 	ret0, _ := ret[0].(*entities.Content)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // MakeMetaData indicates an expected call of MakeMetaData.
-func (mr *MockContentCryptMockRecorder) MakeMetaData(contentInput interface{}) *gomock.Call {
+func (mr *MockContentCryptMockRecorder) MakeMetaData(contentCreateMetaDataput interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MakeMetaData", reflect.TypeOf((*MockContentCrypt)(nil).MakeMetaData), contentInput)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MakeMetaData", reflect.TypeOf((*MockContentCrypt)(nil).MakeMetaData), contentCreateMetaDataput)
 }

@@ -6,34 +6,51 @@ import (
 )
 
 type ContentHandler struct {
-	Crypt    port.ContentCrypt
-	Contract port.ContentContract
+	Crypt    port.CryptPort
+	Contract port.ContractPort
 }
 
-func NewContentInputPort(cryptHandler port.ContentCrypt, contractHandler port.ContentContract) port.ContentInputPort {
+func NewContentInputPort(cryptHandler port.CryptPort, contractHandler port.ContractPort) port.ContentInputPort {
 	return &ContentHandler{
 		Crypt:    cryptHandler,
 		Contract: contractHandler,
 	}
 }
 
-func (c *ContentHandler) MetaGen(contentIn *entities.ContentIn) (*entities.Content, error) {
+func (c *ContentHandler) MetaGen(contentCreateMetaData *entities.ContentCreateMetaData) (*entities.MetaData, error) {
 	//* メタデータ作成
-	content, err := c.Crypt.MakeMetaData(contentIn)
+	metaData, err := c.Crypt.MakeMetaData(contentCreateMetaData)
 	if err != nil {
 		return nil, err
 	}
-	return content, nil
+	return metaData,  nil
 }
 
-func (c *ContentHandler) SetKey(pubKey, ethPrivKey string) error {
-	err := c.Contract.SetKey(pubKey, ethPrivKey)
+func (c *ContentHandler) SetKey(pubKey []byte) error {
+	err := c.Contract.SetPubKey(pubKey)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *ContentHandler) GetLog() (*entities.Content, error) {
-	return &entities.Content{}, nil
+func (c *ContentHandler) ListLog() ([]*entities.Log, error) {
+	contentIDs, _ := c.Contract.ListContentIDs()
+	cl, err := c.Contract.ListContractLog()
+	if err != nil {
+		return nil, err
+	}
+	al, err := c.Contract.ListAuditLog(contentIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	var logs []*entities.Log
+	for i := 0; i < len(cl) ; i++ {
+		logs = append(logs, &entities.Log{
+			AuditLog:   al[i],
+			ContentLog: cl[i],
+		})
+	}
+	return logs, nil
 }

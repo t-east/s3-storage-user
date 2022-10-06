@@ -5,17 +5,20 @@ import (
 )
 
 type ContentInputPort interface {
-	MetaGen(content *entities.ContentIn) (*entities.Content, error)
-	GetLog() (*entities.Content, error)
-	SetKey(key, ethPrivKey string)  error
+	MetaGen(content *entities.ContentCreateMetaData) (*entities.MetaData, error)
+	ListLog() ([]*entities.Log, error)
+	SetKey(key []byte) error
 }
 
-type ContentCrypt interface {
-	MakeMetaData(contentInput *entities.ContentIn) (*entities.Content, error)
+type CryptPort interface {
+	MakeMetaData(contentCreateMetaData *entities.ContentCreateMetaData) (*entities.MetaData, error)
 	KeyGen() (*entities.Key, error)
 }
 
-type ContentContract interface {
-	GetContractLog() ([]*entities.Content, error)
-	SetKey(key, address string) error
+type ContractPort interface {
+	ListContractLog() ([]*entities.ContentLog, error)
+	ListContentIDs() ([]string, error)
+	GetAuditLog(string) (*entities.AuditLog, error)
+	ListAuditLog([]string) ([]*entities.AuditLog, error)
+	SetPubKey(key []byte) error
 }
