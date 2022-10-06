@@ -28,7 +28,7 @@ func (c *ContentHandler) MetaGen(contentCreateMetaData *entities.ContentCreateMe
 }
 
 func (c *ContentHandler) SetKey(pubKey []byte) error {
-	err := c.Contract.SetKey(pubKey)
+	err := c.Contract.SetPubKey(pubKey)
 	if err != nil {
 		return err
 	}

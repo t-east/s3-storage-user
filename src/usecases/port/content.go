@@ -20,5 +20,5 @@ type ContractPort interface {
 	ListContentIDs() ([]string, error)
 	GetAuditLog(string) (*entities.AuditLog, error)
 	ListAuditLog([]string) ([]*entities.AuditLog, error)
-	SetKey(key []byte) error
+	SetPubKey(key []byte) error
 }

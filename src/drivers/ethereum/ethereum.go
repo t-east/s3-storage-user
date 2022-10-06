@@ -6,7 +6,6 @@ import (
 	"errors"
 	"log"
 	"math/big"
-	"os"
 	"user/src/domains/entities"
 	audit "user/src/drivers/ethereum/audit"
 	content "user/src/drivers/ethereum/content"
@@ -20,13 +19,11 @@ import (
 )
 
 func ConnectContentNetWork() (*content.Contracts, *ethclient.Client) {
-	contractAddress := os.Getenv("CONTENT_ADDRESS")
-	ganaHost := os.Getenv("GANA_HOST")
 	client, err := ethclient.Dial(ganaHost)
 	if err != nil {
 		panic(err)
 	}
-	conn, err := content.NewContracts(common.HexToAddress(contractAddress), client)
+	conn, err := content.NewContracts(common.HexToAddress(ethContentAddress), client)
 	if err != nil {
 		panic(err)
 	}
@@ -34,13 +31,11 @@ func ConnectContentNetWork() (*content.Contracts, *ethclient.Client) {
 }
 
 func ConnectAuditNetWork() (*audit.Contracts, *ethclient.Client) {
-	contractAddress := os.Getenv("AUDIT_ADDRESS")
-	ganaHost := os.Getenv("GANA_HOST")
 	client, err := ethclient.Dial(ganaHost)
 	if err != nil {
 		panic(err)
 	}
-	conn, err := audit.NewContracts(common.HexToAddress(contractAddress), client)
+	conn, err := audit.NewContracts(common.HexToAddress(ethAuditAddress), client)
 	if err != nil {
 		panic(err)
 	}
@@ -48,13 +43,11 @@ func ConnectAuditNetWork() (*audit.Contracts, *ethclient.Client) {
 }
 
 func ConnectPubkeyNetWork() (*pubkey.Contracts, *ethclient.Client) {
-	contractAddress := os.Getenv("PUBKEY_ADDRESS")
-	ganaHost := os.Getenv("GANA_HOST")
 	client, err := ethclient.Dial(ganaHost)
 	if err != nil {
 		panic(err)
 	}
-	conn, err := pubkey.NewContracts(common.HexToAddress(contractAddress), client)
+	conn, err := pubkey.NewContracts(common.HexToAddress(ethPubKeyAddress), client)
 	if err != nil {
 		panic(err)
 	}
@@ -62,14 +55,12 @@ func ConnectPubkeyNetWork() (*pubkey.Contracts, *ethclient.Client) {
 }
 
 func ConnectParamNetWork() (*param.Contracts, *ethclient.Client) {
-	contractAddress := os.Getenv("PARAM_ADDRESS")
-	ganaHost := os.Getenv("GANA_HOST")
 	client, err := ethclient.Dial(ganaHost)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	conn, err := param.NewContracts(common.HexToAddress(contractAddress), client)
+	conn, err := param.NewContracts(common.HexToAddress(ethParamAddress), client)
 	if err != nil {
 		panic(err)
 	}
@@ -77,8 +68,7 @@ func ConnectParamNetWork() (*param.Contracts, *ethclient.Client) {
 }
 
 func GetUserAddress(privKey string) common.Address {
-	userPrivKeyStr := os.Getenv("SP_PRIVATE_KEY")
-	privateKey, err := crypto.HexToECDSA(userPrivKeyStr)
+	privateKey, err := crypto.HexToECDSA(EthPrivKey)
 	if err != nil {
 		log.Fatal("error!!")
 	}

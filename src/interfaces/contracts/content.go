@@ -26,17 +26,16 @@ func (cc *ContentContract) ListContractLog() ([]*entities.ContentLog, error) {
 	return logSchema.BindSchema(), nil
 }
 
-func (cc *ContentContract) SetKey(key []byte) error {
-	// privKey := os.Getenv("USER_PRIVATE_KEY")
-	// conn, client := ethereum.ConnectPubkeyNetWork()
-	// auth, err := ethereum.AuthUser(client, privKey)
-	// if err != nil {
-	// 	return err
-	// }
-	// _, err = conn.SetPubkey(auth, key)
-	// if err != nil {
-	// 	return err
-	// }
+func (cc *ContentContract) SetPubKey(pubKey []byte) error {
+	conn, client := ethereum.ConnectPubkeyNetWork()
+	auth, err := ethereum.AuthUser(client, ethereum.EthPrivKey)
+	if err != nil {
+		return err
+	}
+	_, err = conn.SetPubkey(auth, pubKey)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
