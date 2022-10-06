@@ -3,7 +3,6 @@ package schema
 import (
 	"bytes"
 	"encoding/gob"
-	"user/src/core"
 	"user/src/domains/entities"
 )
 
@@ -15,6 +14,6 @@ func SplitContent(c entities.Point, splitCount int) ([][]byte, error) {
 		return nil, err
 	}
 	contentByte := cb.Bytes()
-	return core.SplitSlice(contentByte, splitCount)
+	return SplitSlice(contentByte, splitCount)
 
 }
