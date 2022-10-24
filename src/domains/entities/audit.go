@@ -2,8 +2,10 @@ package entities
 
 type IndexLog struct {
 	HashedData [][]byte `json:"hashed_data"`
-	IndexId  string   `json:"index_id"`
+	IndexId    string   `json:"index_id"`
 	Owner      string   `json:"owner"`
+	Provider   string   `json:"provider"`
+	IsActive   bool     `json:"is_active"`
 }
 
 type AuditLog struct {
@@ -13,6 +15,6 @@ type AuditLog struct {
 }
 
 type Log struct {
-	AuditLog   *AuditLog   `json:"audit_log"`
+	AuditLog *AuditLog `json:"audit_log"`
 	IndexLog *IndexLog `json:"index_log"`
 }

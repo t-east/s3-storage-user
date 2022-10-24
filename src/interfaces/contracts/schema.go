@@ -17,6 +17,8 @@ func (ccl *IndexLogSchema) BindSchema() []*entities.IndexLog {
 			HashedData: inList[i].Hash,
 			IndexId:    inList[i].AuditLogId,
 			Owner:      inList[i].Owner.String(),
+			Provider:   inList[i].Provider.String(),
+			IsActive: inList[i].IsActive,
 		})
 	}
 	return outList
