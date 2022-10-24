@@ -14,20 +14,20 @@ func NewContentContracts() port.ContractPort {
 	return &ContentContract{}
 }
 
-func (cc *ContentContract) ListContractLog() ([]*entities.ContentLog, error) {
-	conn, _ := ethereum.ConnectContentNetWork()
-	list, err := conn.ListContentLog(&bind.CallOpts{})
+func (cc *ContentContract) ListIndexLog() ([]*entities.IndexLog, error) {
+	conn, _ := ethereum.ConnectContractNetWork()
+	list, err := conn.ListIndexLog(&bind.CallOpts{})
 	if err != nil {
 		return nil, err
 	}
-	logSchema := ContentLogSchema{
+	logSchema := IndexLogSchema{
 		Logs: list,
 	}
 	return logSchema.BindSchema(), nil
 }
 
 func (cc *ContentContract) SetPubKey(pubKey []byte) error {
-	conn, client := ethereum.ConnectPubkeyNetWork()
+	conn, client := ethereum.ConnectContractNetWork()
 	auth, err := ethereum.AuthUser(client, ethereum.EthPrivKey)
 	if err != nil {
 		return err
@@ -39,15 +39,14 @@ func (cc *ContentContract) SetPubKey(pubKey []byte) error {
 	return nil
 }
 
-func (cc *ContentContract) GetAuditLog(id string) (*entities.AuditLog, error) {
-	conn, _ := ethereum.ConnectAuditNetWork()
-	a, err := conn.GetAuditLog(&bind.CallOpts{}, id)
+func (cc *ContentContract) FindAuditLogByIndexID(indexID string) (*entities.AuditLog, error) {
+	conn, _ := ethereum.ConnectContractNetWork()
+	a, err := conn.FindAuditLogByIndexID(&bind.CallOpts{}, indexID)
 	if err != nil {
 		return nil, err
 	}
 	return &entities.AuditLog{
 		Challenge: &entities.Challenge{
-			ContentId: id,
 			C:         int(a.Chal),
 			K1:        a.K1,
 			K2:        a.K2,
@@ -55,20 +54,18 @@ func (cc *ContentContract) GetAuditLog(id string) (*entities.AuditLog, error) {
 		Proof: &entities.Proof{
 			Myu:       a.Myu,
 			Gamma:     a.Gamma,
-			ContentId: id,
 		},
 		Result:    a.Result,
-		ContentID: id,
 	}, nil
 }
 
-func (cc *ContentContract) ListContentIDs() ([]string, error) {
-	conn, _ := ethereum.ConnectContentNetWork()
-	return conn.ListContentID(&bind.CallOpts{})
+func (cc *ContentContract) ListIndexID() ([]string, error) {
+	conn, _ := ethereum.ConnectContractNetWork()
+	return conn.ListIndexID(&bind.CallOpts{})
 }
 
 func (cc *ContentContract) ListAuditLog(ids []string) ([]*entities.AuditLog, error) {
-	conn, _ := ethereum.ConnectAuditNetWork()
+	conn, _ := ethereum.ConnectContractNetWork()
 	al, err := conn.ListAuditLog(&bind.CallOpts{}, ids)
 	if err != nil {
 		return nil, err
@@ -77,7 +74,6 @@ func (cc *ContentContract) ListAuditLog(ids []string) ([]*entities.AuditLog, err
 	for i := 0; i < len(al); i++ {
 		logs = append(logs, &entities.AuditLog{
 			Challenge: &entities.Challenge{
-				ContentId: ids[i],
 				C:         int(al[i].Chal),
 				K1:        al[i].K1,
 				K2:        al[i].K2,
@@ -85,10 +81,8 @@ func (cc *ContentContract) ListAuditLog(ids []string) ([]*entities.AuditLog, err
 			Proof: &entities.Proof{
 				Myu:       al[i].Myu,
 				Gamma:     al[i].Gamma,
-				ContentId: ids[i],
 			},
 			Result:    al[i].Result,
-			ContentID: ids[i],
 		})
 	}
 	return logs, nil

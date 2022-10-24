@@ -2,20 +2,21 @@ package contracts
 
 import (
 	"user/src/domains/entities"
-	eth "user/src/drivers/ethereum/content"
+	"user/src/drivers/ethereum"
 )
 
-type ContentLogSchema struct {
-	Logs []eth.ContentContentLog
+type IndexLogSchema struct {
+	Logs []ethereum.ContractIndexLog
 }
 
-func (ccl *ContentLogSchema) BindSchema() []*entities.ContentLog {
+func (ccl *IndexLogSchema) BindSchema() []*entities.IndexLog {
 	var inList = ccl.Logs
-	var outList []*entities.ContentLog
+	var outList []*entities.IndexLog
 	for i := 0; i < len(inList); i++ {
-		outList = append(outList, &entities.ContentLog{
+		outList = append(outList, &entities.IndexLog{
 			HashedData: inList[i].Hash,
-			ContentId:  inList[i].LogId,
+			IndexId:    inList[i].AuditLogId,
+			Owner:      inList[i].Owner.String(),
 		})
 	}
 	return outList

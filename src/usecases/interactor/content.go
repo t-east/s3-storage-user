@@ -35,8 +35,8 @@ func (c *ContentHandler) SetKey(pubKey []byte) error {
 }
 
 func (c *ContentHandler) ListLog() ([]*entities.Log, error) {
-	contentIDs, _ := c.Contract.ListContentIDs()
-	cl, err := c.Contract.ListContractLog()
+	contentIDs, _ := c.Contract.ListIndexID()
+	il, err := c.Contract.ListIndexLog()
 	if err != nil {
 		return nil, err
 	}
@@ -46,10 +46,10 @@ func (c *ContentHandler) ListLog() ([]*entities.Log, error) {
 	}
 
 	var logs []*entities.Log
-	for i := 0; i < len(cl) ; i++ {
+	for i := 0; i < len(il) ; i++ {
 		logs = append(logs, &entities.Log{
 			AuditLog:   al[i],
-			ContentLog: cl[i],
+			IndexLog: il[i],
 		})
 	}
 	return logs, nil

@@ -16,9 +16,9 @@ type CryptPort interface {
 }
 
 type ContractPort interface {
-	ListContractLog() ([]*entities.ContentLog, error)
-	ListContentIDs() ([]string, error)
-	GetAuditLog(string) (*entities.AuditLog, error)
-	ListAuditLog([]string) ([]*entities.AuditLog, error)
+	ListIndexLog() ([]*entities.IndexLog, error)
+	ListIndexID() ([]string, error)
+	FindAuditLogByIndexID(indexID string) (*entities.AuditLog, error)
+	ListAuditLog(indexIDs []string) ([]*entities.AuditLog, error)
 	SetPubKey(key []byte) error
 }
