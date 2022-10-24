@@ -47,15 +47,15 @@ func (cc *ContentContract) FindAuditLogByIndexID(indexID string) (*entities.Audi
 	}
 	return &entities.AuditLog{
 		Challenge: &entities.Challenge{
-			C:         int(a.Chal),
-			K1:        a.K1,
-			K2:        a.K2,
+			C:  int(a.Chal),
+			K1: a.K1,
+			K2: a.K2,
 		},
 		Proof: &entities.Proof{
-			Myu:       a.Myu,
-			Gamma:     a.Gamma,
+			Myu:   a.Myu,
+			Gamma: a.Gamma,
 		},
-		Result:    a.Result,
+		Result: a.Result,
 	}, nil
 }
 
@@ -74,15 +74,15 @@ func (cc *ContentContract) ListAuditLog(ids []string) ([]*entities.AuditLog, err
 	for i := 0; i < len(al); i++ {
 		logs = append(logs, &entities.AuditLog{
 			Challenge: &entities.Challenge{
-				C:         int(al[i].Chal),
-				K1:        al[i].K1,
-				K2:        al[i].K2,
+				C:  int(al[i].Chal),
+				K1: al[i].K1,
+				K2: al[i].K2,
 			},
 			Proof: &entities.Proof{
-				Myu:       al[i].Myu,
-				Gamma:     al[i].Gamma,
+				Myu:   al[i].Myu,
+				Gamma: al[i].Gamma,
 			},
-			Result:    al[i].Result,
+			Result: al[i].Result,
 		})
 	}
 	return logs, nil
