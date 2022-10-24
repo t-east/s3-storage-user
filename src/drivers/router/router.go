@@ -15,7 +15,10 @@ func NewServer(cc controllers.ContentController) *echo.Echo {
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+        AllowOrigins: []string{"*"},
+        AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+    }))
 	e.Pre(middleware.RemoveTrailingSlash())
 
 	e.GET("/health", func(c echo.Context) error {
