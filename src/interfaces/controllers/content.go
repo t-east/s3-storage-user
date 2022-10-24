@@ -5,6 +5,7 @@ import (
 	"user/src/domains/entities"
 	"user/src/interfaces/contracts"
 	"user/src/interfaces/crypt"
+	"user/src/interfaces/random"
 	"user/src/usecases/interactor"
 	"user/src/usecases/port"
 
@@ -41,15 +42,17 @@ func (cc *ContentController) MetaGen(c echo.Context) error {
 	}
 	crypt := crypt.NewContentCrypt(cc.Param)
 	contract := contracts.NewContentContracts()
+	random := random.NewRandomID()
 	inputPort := interactor.NewContentInputPort(
 		crypt,
 		contract,
+		random,
 	)
-	receipt, err := inputPort.MetaGen(content)
+	metaData, err := inputPort.MetaGen(content)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return c.JSON(http.StatusCreated, receipt)
+	return c.JSON(http.StatusCreated, metaData)
 }
 
 type SetKeyReq struct {
@@ -64,9 +67,11 @@ func (cc *ContentController) SetKey(c echo.Context) error {
 	}
 	crypt := crypt.NewContentCrypt(cc.Param)
 	contract := contracts.NewContentContracts()
+	random := random.NewRandomID()
 	inputPort := interactor.NewContentInputPort(
 		crypt,
 		contract,
+		random,
 	)
 	err := inputPort.SetKey(req.PubKey)
 	if err != nil {
@@ -75,16 +80,46 @@ func (cc *ContentController) SetKey(c echo.Context) error {
 	return c.NoContent(http.StatusCreated)
 }
 
-func (cc *ContentController) GetLog(c echo.Context) error {
+type InitIndexLogReq struct {
+	Hash [][]byte `json:"hash_data"`
+}
+
+type InitIndexLogRes struct {
+	ID string `json:"id"`
+}
+
+func (cc *ContentController) InitIndexLog(c echo.Context) error {
+	req := &InitIndexLogReq{}
+	if err := c.Bind(req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
 	crypt := crypt.NewContentCrypt(cc.Param)
 	contract := contracts.NewContentContracts()
+	random := random.NewRandomID()
 	inputPort := interactor.NewContentInputPort(
 		crypt,
 		contract,
+		random,
 	)
-	content, err := inputPort.ListLog()
+	id, err := inputPort.InitIndexLog(req.Hash)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return c.JSON(http.StatusOK, content)
+	return c.JSON(http.StatusOK, InitIndexLogRes{ID: id})
+}
+
+func (cc *ContentController) ListLog(c echo.Context) error {
+	crypt := crypt.NewContentCrypt(cc.Param)
+	contract := contracts.NewContentContracts()
+	random := random.NewRandomID()
+	inputPort := interactor.NewContentInputPort(
+		crypt,
+		contract,
+		random,
+	)
+	logList, err := inputPort.ListLog()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusOK, logList)
 }

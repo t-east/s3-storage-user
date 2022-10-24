@@ -39,6 +39,19 @@ func (cc *ContentContract) SetPubKey(pubKey []byte) error {
 	return nil
 }
 
+func (cc *ContentContract) InitIndexLog(indexId string, hash [][]byte) error {
+	conn, client := ethereum.ConnectContractNetWork()
+	auth, err := ethereum.AuthUser(client, ethereum.EthPrivKey)
+	if err != nil {
+		return err
+	}
+	_, err = conn.InitIndexLog(auth, indexId, hash)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (cc *ContentContract) FindAuditLogByIndexID(indexID string) (*entities.AuditLog, error) {
 	conn, _ := ethereum.ConnectContractNetWork()
 	a, err := conn.FindAuditLogByIndexID(&bind.CallOpts{}, indexID)

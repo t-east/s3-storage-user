@@ -8,12 +8,14 @@ import (
 type ContentHandler struct {
 	Crypt    port.CryptPort
 	Contract port.ContractPort
+	Random   port.RandomIDPort
 }
 
-func NewContentInputPort(cryptHandler port.CryptPort, contractHandler port.ContractPort) port.ContentInputPort {
+func NewContentInputPort(cryptHandler port.CryptPort, contractHandler port.ContractPort, randomHandler port.RandomIDPort) port.ContentInputPort {
 	return &ContentHandler{
 		Crypt:    cryptHandler,
 		Contract: contractHandler,
+		Random:   randomHandler,
 	}
 }
 
@@ -23,7 +25,7 @@ func (c *ContentHandler) MetaGen(contentCreateMetaData *entities.ContentCreateMe
 	if err != nil {
 		return nil, err
 	}
-	return metaData,  nil
+	return metaData, nil
 }
 
 func (c *ContentHandler) SetKey(pubKey []byte) error {
@@ -46,11 +48,23 @@ func (c *ContentHandler) ListLog() ([]*entities.Log, error) {
 	}
 
 	var logs []*entities.Log
-	for i := 0; i < len(il) ; i++ {
+	for i := 0; i < len(il); i++ {
 		logs = append(logs, &entities.Log{
-			AuditLog:   al[i],
+			AuditLog: al[i],
 			IndexLog: il[i],
 		})
 	}
 	return logs, nil
+}
+
+func (c *ContentHandler) InitIndexLog(hash [][]byte) (string, error) {
+	id, err := c.Random.MakeRandomStr()
+	if err != nil {
+		return "", err
+	}
+	err = c.Contract.InitIndexLog(id, hash)
+	if err != nil {
+		return "", err
+	}
+	return id, nil
 }
