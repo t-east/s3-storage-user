@@ -43,8 +43,8 @@ func (c *ContentHandler) ListLog() ([]*entities.Log, error) {
 	}
 
 	var logs []*entities.Log
-	for i := 0; i < len(indexIds); i++ {
-		indexLog, err := c.Contract.FindIndexLogByID(indexIds[i])
+	for _, l := range indexIds {
+		indexLog, err := c.Contract.FindIndexLogByID(l)
 		if err != nil {
 			return nil, err
 		}
@@ -55,10 +55,12 @@ func (c *ContentHandler) ListLog() ([]*entities.Log, error) {
 				return nil, err
 			}
 		}
-		logs = append(logs, &entities.Log{
+		log := &entities.Log{
 			AuditLog: auditLog,
 			IndexLog: indexLog,
-		})
+		}
+		log.SetStatus()
+		logs = append(logs, log)
 	}
 	return logs, nil
 }

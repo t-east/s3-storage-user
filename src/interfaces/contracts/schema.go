@@ -12,12 +12,12 @@ type IndexLogSchema struct {
 func (ccl *IndexLogSchema) BindSchema() []*entities.IndexLog {
 	var inList = ccl.Logs
 	var outList []*entities.IndexLog
-	for i := 0; i < len(inList); i++ {
+	for _, l := range inList {
 		outList = append(outList, &entities.IndexLog{
-			HashedData: inList[i].Hash,
-			IndexId:    inList[i].AuditLogId,
-			Owner:      inList[i].Owner.String(),
-			Provider:   inList[i].Provider.String(),
+			HashedData: l.Hash,
+			IndexId:    l.AuditLogId,
+			Owner:      l.Owner.String(),
+			Provider:   l.Provider.String(),
 		})
 	}
 	return outList

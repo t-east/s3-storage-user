@@ -68,31 +68,33 @@ type IndexLogRes struct {
 type LogListRes struct {
 	AuditLog AuditLogRes `json:"audit_log"`
 	IndexLog IndexLogRes `json:"index_log"`
+	Status   string      `json:"status"`
 }
 
 func LogListToRes(logs []*entities.Log) []*LogListRes {
 	var res []*LogListRes
-	for i := 0; i < len(logs); i++ {
+	for _, l := range logs {
 		res = append(res, &LogListRes{
 			AuditLog: AuditLogRes{
 				Challenge: ChallengeRes{
-					C:  logs[i].AuditLog.Challenge.C,
-					K1: logs[i].AuditLog.Challenge.K1,
-					K2: logs[i].AuditLog.Challenge.K2,
+					C:  l.AuditLog.Challenge.C,
+					K1: l.AuditLog.Challenge.K1,
+					K2: l.AuditLog.Challenge.K2,
 				},
 				Proof: ProofRes{
-					Myu:   logs[i].AuditLog.Proof.Myu,
-					Gamma: logs[i].AuditLog.Proof.Gamma,
+					Myu:   l.AuditLog.Proof.Myu,
+					Gamma: l.AuditLog.Proof.Gamma,
 				},
-				Result: logs[i].AuditLog.Result,
+				Result: l.AuditLog.Result,
 			},
 			IndexLog: IndexLogRes{
-				HashedData: logs[i].IndexLog.HashedData,
-				IndexId:    logs[i].IndexLog.IndexId,
-				Owner:      logs[i].IndexLog.Owner,
-				Provider:   logs[i].IndexLog.Provider,
-				AuditLogId: logs[i].IndexLog.AuditLogId,
+				HashedData: l.IndexLog.HashedData,
+				IndexId:    l.IndexLog.IndexId,
+				Owner:      l.IndexLog.Owner,
+				Provider:   l.IndexLog.Provider,
+				AuditLogId: l.IndexLog.AuditLogId,
 			},
+			Status: string(l.Status),
 		})
 	}
 	return res
