@@ -53,9 +53,9 @@ type ProofRes struct {
 }
 
 type AuditLogRes struct {
-	Challenge ChallengeRes
-	Proof     ProofRes
-	Result    bool `json:"result"`
+	Challenge ChallengeRes `json:"challenge"`
+	Proof     ProofRes     `json:"proof"`
+	Result    bool         `json:"result"`
 }
 
 type IndexLogRes struct {
