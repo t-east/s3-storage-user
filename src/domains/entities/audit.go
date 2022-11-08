@@ -5,7 +5,6 @@ type IndexLog struct {
 	IndexId    string   `json:"index_id"`
 	Owner      string   `json:"owner"`
 	Provider   string   `json:"provider"`
-	IsActive   bool     `json:"is_active"`
 }
 
 type AuditLog struct {
