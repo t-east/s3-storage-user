@@ -6,6 +6,7 @@ import (
 	"user/src/usecases/port"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 type ContentContract struct{}
@@ -16,7 +17,7 @@ func NewContentContracts() port.ContractPort {
 
 func (cc *ContentContract) ListIndexLog() ([]*entities.IndexLog, error) {
 	conn, _ := ethereum.ConnectContractNetWork()
-	list, err := conn.ListIndexLog(&bind.CallOpts{})
+	list, err := conn.ListIndexLog(&bind.CallOpts{From: common.HexToAddress(ethereum.EthAddress)})
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +55,8 @@ func (cc *ContentContract) InitIndexLog(indexId string, hash [][]byte) error {
 
 func (cc *ContentContract) FindAuditLogByIndexID(indexID string) (*entities.AuditLog, error) {
 	conn, _ := ethereum.ConnectContractNetWork()
-	a, err := conn.FindAuditLogByIndexID(&bind.CallOpts{}, indexID)
+	add := ethereum.GetUserAddress(ethereum.EthPrivKey)
+	a, err := conn.FindAuditLogByIndexID(&bind.CallOpts{From: add}, indexID)
 	if err != nil {
 		return nil, err
 	}
@@ -74,12 +76,14 @@ func (cc *ContentContract) FindAuditLogByIndexID(indexID string) (*entities.Audi
 
 func (cc *ContentContract) ListIndexID() ([]string, error) {
 	conn, _ := ethereum.ConnectContractNetWork()
-	return conn.ListIndexID(&bind.CallOpts{})
+	add := ethereum.GetUserAddress(ethereum.EthPrivKey)
+	return conn.ListIndexID(&bind.CallOpts{From: add})
 }
 
 func (cc *ContentContract) ListAuditLog(ids []string) ([]*entities.AuditLog, error) {
 	conn, _ := ethereum.ConnectContractNetWork()
-	al, err := conn.ListAuditLog(&bind.CallOpts{}, ids)
+	add := ethereum.GetUserAddress(ethereum.EthPrivKey)
+	al, err := conn.ListAuditLog(&bind.CallOpts{From: add}, ids)
 	if err != nil {
 		return nil, err
 	}

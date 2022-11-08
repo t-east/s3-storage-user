@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"errors"
-	"fmt"
 	"log"
 	"math/big"
 	"user/src/domains/entities"
@@ -20,8 +19,6 @@ func ConnectContractNetWork() (*Contracts, *ethclient.Client) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Print(ganaHost)
-	fmt.Print(ethContractAddress)
 	conn, err := NewContracts(common.HexToAddress(ethContractAddress), client)
 	if err != nil {
 		panic(err)
@@ -81,7 +78,7 @@ func AuthUser(client *ethclient.Client, privKey string) (*bind.TransactOpts, err
 
 func GetParam() (*entities.Param, error) {
 	conn, _ := ConnectContractNetWork()
-	p, err := conn.GetParam(&bind.CallOpts{})
+	p, err := conn.GetParam(&bind.CallOpts{From: common.HexToAddress(EthAddress)})
 	if err != nil {
 		return nil, err
 	}
