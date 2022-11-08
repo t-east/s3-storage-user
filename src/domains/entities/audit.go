@@ -5,6 +5,7 @@ type IndexLog struct {
 	IndexId    string   `json:"index_id"`
 	Owner      string   `json:"owner"`
 	Provider   string   `json:"provider"`
+	AuditLogId string   `json:"audit_log_id"`
 }
 
 type AuditLog struct {
