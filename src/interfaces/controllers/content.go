@@ -35,7 +35,7 @@ func (cc *ContentController) MetaGen(c echo.Context) error {
 	if err := c.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	content := ContentAPISchemaToEntity(req)
+	content := MetaDataReqToEntity(req)
 	crypt := crypt.NewContentCrypt(cc.Param)
 	contract := contracts.NewContentContracts()
 	random := random.NewRandomID()
@@ -48,12 +48,8 @@ func (cc *ContentController) MetaGen(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return c.JSON(http.StatusCreated, metaData)
-}
-
-type SetKeyReq struct {
-	PubKey     []byte `json:"pub_key"`
-	EthPrivKey string `json:"eth_priv_key"`
+	res := MetaDataEntityToRes(metaData)
+	return c.JSON(http.StatusCreated, res)
 }
 
 func (cc *ContentController) SetKey(c echo.Context) error {
@@ -74,10 +70,6 @@ func (cc *ContentController) SetKey(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return c.NoContent(http.StatusCreated)
-}
-
-type InitIndexLogRes struct {
-	ID string `json:"id"`
 }
 
 func (cc *ContentController) InitIndexLog(c echo.Context) error {
@@ -109,5 +101,6 @@ func (cc *ContentController) ListLog(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return c.JSON(http.StatusOK, logList)
+	res := LogListToRes(logList)
+	return c.JSON(http.StatusOK, res)
 }
