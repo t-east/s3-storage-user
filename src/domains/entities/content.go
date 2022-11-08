@@ -1,19 +1,18 @@
 package entities
 
 type Point struct {
-	X int `json:"x"`
-	Y int `json:"y"`
+	X int
+	Y int
 }
 
 type MetaData [][]byte
 type Content struct {
-	Content  Point    `json:"content"`
-	MetaData MetaData `json:"meta_data"`
+	Content  Point
+	MetaData MetaData
 }
 
 type ContentCreateMetaData struct {
-	Content Point  `json:"content"`
-	PrivKey []byte `json:"priv_key"`
-	Address string `json:"address"`
+	Content Point
+	PrivKey []byte
+	Address string
 }
-

@@ -1,20 +1,20 @@
 package entities
 
 type IndexLog struct {
-	HashedData [][]byte `json:"hashed_data"`
-	IndexId    string   `json:"index_id"`
-	Owner      string   `json:"owner"`
-	Provider   string   `json:"provider"`
-	AuditLogId string   `json:"audit_log_id"`
+	HashedData [][]byte
+	IndexId    string
+	Owner      string
+	Provider   string
+	AuditLogId string
 }
 
 type AuditLog struct {
-	Challenge *Challenge `json:"challenge"`
-	Proof     *Proof     `json:"proof"`
-	Result    bool       `json:"result"`
+	Challenge *Challenge
+	Proof     *Proof
+	Result    bool
 }
 
 type Log struct {
-	AuditLog *AuditLog `json:"audit_log"`
-	IndexLog *IndexLog `json:"index_log"`
+	AuditLog *AuditLog
+	IndexLog *IndexLog
 }

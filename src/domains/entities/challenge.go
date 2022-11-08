@@ -1,12 +1,12 @@
 package entities
 
 type Challenge struct {
-	C         int    `json:"ck"`
-	K1        []byte `json:"k1"`
-	K2        []byte `json:"k2"`
+	C  int
+	K1 []byte
+	K2 []byte
 }
 
 type ChallengeList struct {
-	DataList []Challenge `json:"data"`
-	Total    int    `json:"total"`
+	DataList []Challenge
+	Total    int
 }
