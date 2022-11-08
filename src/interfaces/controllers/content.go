@@ -80,19 +80,11 @@ func (cc *ContentController) SetKey(c echo.Context) error {
 	return c.NoContent(http.StatusCreated)
 }
 
-type InitIndexLogReq struct {
-	Hash [][]byte `json:"hash_data"`
-}
-
 type InitIndexLogRes struct {
 	ID string `json:"id"`
 }
 
 func (cc *ContentController) InitIndexLog(c echo.Context) error {
-	req := &InitIndexLogReq{}
-	if err := c.Bind(req); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
 	crypt := crypt.NewContentCrypt(cc.Param)
 	contract := contracts.NewContentContracts()
 	random := random.NewRandomID()
@@ -101,7 +93,7 @@ func (cc *ContentController) InitIndexLog(c echo.Context) error {
 		contract,
 		random,
 	)
-	id, err := inputPort.InitIndexLog(req.Hash)
+	id, err := inputPort.InitIndexLog()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}

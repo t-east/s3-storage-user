@@ -57,12 +57,12 @@ func (c *ContentHandler) ListLog() ([]*entities.Log, error) {
 	return logs, nil
 }
 
-func (c *ContentHandler) InitIndexLog(hash [][]byte) (string, error) {
+func (c *ContentHandler) InitIndexLog() (string, error) {
 	id, err := c.Random.MakeRandomStr()
 	if err != nil {
 		return "", err
 	}
-	err = c.Contract.InitIndexLog(id, hash)
+	err = c.Contract.InitIndexLog(id)
 	if err != nil {
 		return "", err
 	}
