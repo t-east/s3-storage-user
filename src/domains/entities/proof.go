@@ -1,12 +1,11 @@
 package entities
 
 type Proof struct {
-	Myu       []byte `json:"myu"`
-	Gamma     []byte `json:"gamma"`
-	ContentId string `json:"content_id"`
+	Myu   []byte
+	Gamma []byte
 }
 
 type Proofs struct {
-	DataList []Proof `json:"proofs"`
-	Total    int     `json:"total"`
+	DataList []Proof
+	Total    int
 }

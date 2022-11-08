@@ -1,19 +1,45 @@
 package entities
 
-type ContentLog struct {
-	HashedData [][]byte `json:"hashed_data"`
-	ContentId  string   `json:"content_id"`
-	Owner      string   `json:"owner"`
+type IndexLog struct {
+	HashedData [][]byte
+	IndexId    string
+	Owner      string
+	Provider   string
+	AuditLogId string
 }
 
 type AuditLog struct {
-	Challenge *Challenge `json:"chal"`
-	Proof     *Proof     `json:"proof"`
-	Result    bool       `json:"result"`
-	ContentID string     `json:"content_id"`
+	Challenge *Challenge
+	Proof     *Proof
+	Result    bool
 }
 
 type Log struct {
-	AuditLog   *AuditLog   `json:"audit_log"`
-	ContentLog *ContentLog `json:"content_log"`
+	AuditLog *AuditLog
+	IndexLog *IndexLog
+	Status   LogStatus
+}
+
+type LogStatus string
+
+var (
+	Uploading LogStatus = "Uploading"
+	Waiting   LogStatus = "Waiting"
+	Verifying LogStatus = "Verifying"
+	NG        LogStatus = "NG"
+	OK        LogStatus = "OK"
+)
+
+func (l *Log) SetStatus() {
+	if l.IndexLog.Provider == "" {
+		l.Status = Uploading
+	} else if l.IndexLog.AuditLogId == "" {
+		l.Status = Waiting
+	} else if l.AuditLog.Proof == nil || l.AuditLog.Challenge == nil {
+		l.Status = Verifying
+	} else if !l.AuditLog.Result {
+		l.Status = NG
+	} else {
+		l.Status = OK
+	}
 }

@@ -6,6 +6,7 @@ import (
 	"user/src/usecases/port"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 type ContentContract struct{}
@@ -14,20 +15,20 @@ func NewContentContracts() port.ContractPort {
 	return &ContentContract{}
 }
 
-func (cc *ContentContract) ListContractLog() ([]*entities.ContentLog, error) {
-	conn, _ := ethereum.ConnectContentNetWork()
-	list, err := conn.ListContentLog(&bind.CallOpts{})
+func (cc *ContentContract) ListIndexLog() ([]*entities.IndexLog, error) {
+	conn, _ := ethereum.ConnectContractNetWork()
+	list, err := conn.ListIndexLog(&bind.CallOpts{From: common.HexToAddress(ethereum.EthAddress)})
 	if err != nil {
 		return nil, err
 	}
-	logSchema := ContentLogSchema{
+	logSchema := IndexLogSchema{
 		Logs: list,
 	}
 	return logSchema.BindSchema(), nil
 }
 
 func (cc *ContentContract) SetPubKey(pubKey []byte) error {
-	conn, client := ethereum.ConnectPubkeyNetWork()
+	conn, client := ethereum.ConnectContractNetWork()
 	auth, err := ethereum.AuthUser(client, ethereum.EthPrivKey)
 	if err != nil {
 		return err
@@ -39,37 +40,87 @@ func (cc *ContentContract) SetPubKey(pubKey []byte) error {
 	return nil
 }
 
-func (cc *ContentContract) GetAuditLog(id string) (*entities.AuditLog, error) {
-	conn, _ := ethereum.ConnectAuditNetWork()
-	a, err := conn.GetAuditLog(&bind.CallOpts{}, id)
+func (cc *ContentContract) InitIndexLog(indexId string) error {
+	conn, client := ethereum.ConnectContractNetWork()
+	auth, err := ethereum.AuthUser(client, ethereum.EthPrivKey)
+	if err != nil {
+		return err
+	}
+	_, err = conn.InitIndexLog(auth, indexId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (cc *ContentContract) FindAuditLogByIndexID(indexID string) (*entities.AuditLog, error) {
+	conn, _ := ethereum.ConnectContractNetWork()
+	add := ethereum.GetUserAddress(ethereum.EthPrivKey)
+	a, err := conn.FindAuditLogByIndexID(&bind.CallOpts{From: add}, indexID)
 	if err != nil {
 		return nil, err
 	}
 	return &entities.AuditLog{
 		Challenge: &entities.Challenge{
-			ContentId: id,
-			C:         int(a.Chal),
-			K1:        a.K1,
-			K2:        a.K2,
+			C:  int(a.Chal),
+			K1: a.K1,
+			K2: a.K2,
 		},
 		Proof: &entities.Proof{
-			Myu:       a.Myu,
-			Gamma:     a.Gamma,
-			ContentId: id,
+			Myu:   a.Myu,
+			Gamma: a.Gamma,
 		},
-		Result:    a.Result,
-		ContentID: id,
+		Result: a.Result,
 	}, nil
 }
 
-func (cc *ContentContract) ListContentIDs() ([]string, error) {
-	conn, _ := ethereum.ConnectContentNetWork()
-	return conn.ListContentID(&bind.CallOpts{})
+func (cc *ContentContract) FindIndexLogByID(indexID string) (*entities.IndexLog, error) {
+	conn, _ := ethereum.ConnectContractNetWork()
+	add := ethereum.GetUserAddress(ethereum.EthPrivKey)
+	a, err := conn.FindIndexLogByID(&bind.CallOpts{From: add}, indexID)
+	if err != nil {
+		return nil, err
+	}
+	return &entities.IndexLog{
+		HashedData: a.Hash,
+		IndexId:    a.Id,
+		Owner:      a.Owner.String(),
+		Provider:   a.Provider.String(),
+		AuditLogId: a.AuditLogId,
+	}, nil
+}
+
+func (cc *ContentContract) FindAuditLogByID(auditID string) (*entities.AuditLog, error) {
+	conn, _ := ethereum.ConnectContractNetWork()
+	add := ethereum.GetUserAddress(ethereum.EthPrivKey)
+	a, err := conn.FindAuditLogByID(&bind.CallOpts{From: add}, auditID)
+	if err != nil {
+		return nil, err
+	}
+	return &entities.AuditLog{
+		Challenge: &entities.Challenge{
+			C:  int(a.Chal),
+			K1: a.K1,
+			K2: a.K2,
+		},
+		Proof: &entities.Proof{
+			Myu:   a.Myu,
+			Gamma: a.Gamma,
+		},
+		Result: a.Result,
+	}, nil
+}
+
+func (cc *ContentContract) ListIndexID() ([]string, error) {
+	conn, _ := ethereum.ConnectContractNetWork()
+	add := ethereum.GetUserAddress(ethereum.EthPrivKey)
+	return conn.ListIndexID(&bind.CallOpts{From: add})
 }
 
 func (cc *ContentContract) ListAuditLog(ids []string) ([]*entities.AuditLog, error) {
-	conn, _ := ethereum.ConnectAuditNetWork()
-	al, err := conn.ListAuditLog(&bind.CallOpts{}, ids)
+	conn, _ := ethereum.ConnectContractNetWork()
+	add := ethereum.GetUserAddress(ethereum.EthPrivKey)
+	al, err := conn.ListAuditLog(&bind.CallOpts{From: add}, ids)
 	if err != nil {
 		return nil, err
 	}
@@ -77,18 +128,15 @@ func (cc *ContentContract) ListAuditLog(ids []string) ([]*entities.AuditLog, err
 	for i := 0; i < len(al); i++ {
 		logs = append(logs, &entities.AuditLog{
 			Challenge: &entities.Challenge{
-				ContentId: ids[i],
-				C:         int(al[i].Chal),
-				K1:        al[i].K1,
-				K2:        al[i].K2,
+				C:  int(al[i].Chal),
+				K1: al[i].K1,
+				K2: al[i].K2,
 			},
 			Proof: &entities.Proof{
-				Myu:       al[i].Myu,
-				Gamma:     al[i].Gamma,
-				ContentId: ids[i],
+				Myu:   al[i].Myu,
+				Gamma: al[i].Gamma,
 			},
-			Result:    al[i].Result,
-			ContentID: ids[i],
+			Result: al[i].Result,
 		})
 	}
 	return logs, nil

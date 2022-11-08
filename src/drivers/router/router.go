@@ -15,7 +15,10 @@ func NewServer(cc controllers.ContentController) *echo.Echo {
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+	}))
 	e.Pre(middleware.RemoveTrailingSlash())
 
 	e.GET("/health", func(c echo.Context) error {
@@ -23,9 +26,9 @@ func NewServer(cc controllers.ContentController) *echo.Echo {
 	})
 	api := e.Group("/api")
 	api.POST("/content/meta", cc.MetaGen)
-	api.GET("/content", cc.GetLog)
+	api.POST("/init-index", cc.InitIndexLog)
 	api.POST("/key", cc.SetKey)
-	api.POST("/log", cc.GetLog)
+	api.GET("/log", cc.ListLog)
 
 	return e
 }

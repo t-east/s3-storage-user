@@ -7,10 +7,6 @@ import (
 	"log"
 	"math/big"
 	"user/src/domains/entities"
-	audit "user/src/drivers/ethereum/audit"
-	content "user/src/drivers/ethereum/content"
-	param "user/src/drivers/ethereum/param"
-	pubkey "user/src/drivers/ethereum/pubkey"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -18,49 +14,12 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-func ConnectContentNetWork() (*content.Contracts, *ethclient.Client) {
+func ConnectContractNetWork() (*Contracts, *ethclient.Client) {
 	client, err := ethclient.Dial(ganaHost)
 	if err != nil {
 		panic(err)
 	}
-	conn, err := content.NewContracts(common.HexToAddress(ethContentAddress), client)
-	if err != nil {
-		panic(err)
-	}
-	return conn, client
-}
-
-func ConnectAuditNetWork() (*audit.Contracts, *ethclient.Client) {
-	client, err := ethclient.Dial(ganaHost)
-	if err != nil {
-		panic(err)
-	}
-	conn, err := audit.NewContracts(common.HexToAddress(ethAuditAddress), client)
-	if err != nil {
-		panic(err)
-	}
-	return conn, client
-}
-
-func ConnectPubkeyNetWork() (*pubkey.Contracts, *ethclient.Client) {
-	client, err := ethclient.Dial(ganaHost)
-	if err != nil {
-		panic(err)
-	}
-	conn, err := pubkey.NewContracts(common.HexToAddress(ethPubKeyAddress), client)
-	if err != nil {
-		panic(err)
-	}
-	return conn, client
-}
-
-func ConnectParamNetWork() (*param.Contracts, *ethclient.Client) {
-	client, err := ethclient.Dial(ganaHost)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	conn, err := param.NewContracts(common.HexToAddress(ethParamAddress), client)
+	conn, err := NewContracts(common.HexToAddress(ethContractAddress), client)
 	if err != nil {
 		panic(err)
 	}
@@ -118,8 +77,8 @@ func AuthUser(client *ethclient.Client, privKey string) (*bind.TransactOpts, err
 }
 
 func GetParam() (*entities.Param, error) {
-	conn, _ := ConnectParamNetWork()
-	p, err := conn.GetParam(&bind.CallOpts{})
+	conn, _ := ConnectContractNetWork()
+	p, err := conn.GetParam(&bind.CallOpts{From: common.HexToAddress(EthAddress)})
 	if err != nil {
 		return nil, err
 	}
