@@ -31,15 +31,11 @@ func LoadContentController(param *entities.Param) *ContentController {
 }
 
 func (cc *ContentController) MetaGen(c echo.Context) error {
-	req := &entities.ContentCreateMetaData{}
+	req := &MetaDataReq{}
 	if err := c.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	content := &entities.ContentCreateMetaData{
-		Content: req.Content,
-		PrivKey: req.PrivKey,
-		Address: req.Address,
-	}
+	content := ContentAPISchemaToEntity(req)
 	crypt := crypt.NewContentCrypt(cc.Param)
 	contract := contracts.NewContentContracts()
 	random := random.NewRandomID()
