@@ -28,7 +28,7 @@ func NewServer(cc controllers.ContentController) *echo.Echo {
 	api.POST("/content/meta", cc.MetaGen)
 	api.POST("/init-index", cc.InitIndexLog)
 	api.POST("/key", cc.SetKey)
-	api.POST("/log", cc.ListLog)
+	api.GET("/log", cc.ListLog)
 
 	return e
 }

@@ -37,21 +37,27 @@ func (c *ContentHandler) SetKey(pubKey []byte) error {
 }
 
 func (c *ContentHandler) ListLog() ([]*entities.Log, error) {
-	contentIDs, _ := c.Contract.ListIndexID()
-	il, err := c.Contract.ListIndexLog()
-	if err != nil {
-		return nil, err
-	}
-	al, err := c.Contract.ListAuditLog(contentIDs)
+	indexIds, err := c.Contract.ListIndexID()
 	if err != nil {
 		return nil, err
 	}
 
 	var logs []*entities.Log
-	for i := 0; i < len(il); i++ {
+	for i := 0; i < len(indexIds); i++ {
+		indexLog, err := c.Contract.FindIndexLogByID(indexIds[i])
+		if err != nil {
+			return nil, err
+		}
+		var auditLog *entities.AuditLog
+		if indexLog.AuditLogId != "" {
+			auditLog, err = c.Contract.FindAuditLogByID(indexLog.AuditLogId)
+			if err != nil {
+				return nil, err
+			}
+		}
 		logs = append(logs, &entities.Log{
-			AuditLog: al[i],
-			IndexLog: il[i],
+			AuditLog: auditLog,
+			IndexLog: indexLog,
 		})
 	}
 	return logs, nil
