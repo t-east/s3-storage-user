@@ -23,6 +23,8 @@ type ContractPort interface {
 	FindAuditLogByIndexID(indexID string) (*entities.AuditLog, error)
 	ListAuditLog(indexIDs []string) ([]*entities.AuditLog, error)
 	SetPubKey(key []byte) error
+	FindIndexLogByID(indexID string) (*entities.IndexLog, error)
+	FindAuditLogByID(auditID string) (*entities.AuditLog, error)
 }
 
 type RandomIDPort interface {

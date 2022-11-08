@@ -40,13 +40,13 @@ func (cc *ContentContract) SetPubKey(pubKey []byte) error {
 	return nil
 }
 
-func (cc *ContentContract) InitIndexLog(indexId string, hash [][]byte) error {
+func (cc *ContentContract) InitIndexLog(indexId string) error {
 	conn, client := ethereum.ConnectContractNetWork()
 	auth, err := ethereum.AuthUser(client, ethereum.EthPrivKey)
 	if err != nil {
 		return err
 	}
-	_, err = conn.InitIndexLog(auth, indexId, hash)
+	_, err = conn.InitIndexLog(auth, indexId)
 	if err != nil {
 		return err
 	}
@@ -57,6 +57,43 @@ func (cc *ContentContract) FindAuditLogByIndexID(indexID string) (*entities.Audi
 	conn, _ := ethereum.ConnectContractNetWork()
 	add := ethereum.GetUserAddress(ethereum.EthPrivKey)
 	a, err := conn.FindAuditLogByIndexID(&bind.CallOpts{From: add}, indexID)
+	if err != nil {
+		return nil, err
+	}
+	return &entities.AuditLog{
+		Challenge: &entities.Challenge{
+			C:  int(a.Chal),
+			K1: a.K1,
+			K2: a.K2,
+		},
+		Proof: &entities.Proof{
+			Myu:   a.Myu,
+			Gamma: a.Gamma,
+		},
+		Result: a.Result,
+	}, nil
+}
+
+func (cc *ContentContract) FindIndexLogByID(indexID string) (*entities.IndexLog, error) {
+	conn, _ := ethereum.ConnectContractNetWork()
+	add := ethereum.GetUserAddress(ethereum.EthPrivKey)
+	a, err := conn.FindIndexLogByID(&bind.CallOpts{From: add}, indexID)
+	if err != nil {
+		return nil, err
+	}
+	return &entities.IndexLog{
+		HashedData: a.Hash,
+		IndexId:    a.Id,
+		Owner:      a.Owner.String(),
+		Provider:   a.Provider.String(),
+		AuditLogId: a.AuditLogId,
+	}, nil
+}
+
+func (cc *ContentContract) FindAuditLogByID(auditID string) (*entities.AuditLog, error) {
+	conn, _ := ethereum.ConnectContractNetWork()
+	add := ethereum.GetUserAddress(ethereum.EthPrivKey)
+	a, err := conn.FindAuditLogByID(&bind.CallOpts{From: add}, auditID)
 	if err != nil {
 		return nil, err
 	}
